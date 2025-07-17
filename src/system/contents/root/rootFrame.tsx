@@ -8,7 +8,7 @@ import TimelineFrame from "./timeline/timelineFrame";
 const RootFrame = () => {
     return <>
         <_HeaderDiv>
-            {/* <RootHeader /> */}
+            <RootHeader />
         </_HeaderDiv>
         <_MainDiv>
             <_OutlineDiv>
