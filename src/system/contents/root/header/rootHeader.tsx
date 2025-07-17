@@ -13,8 +13,9 @@ export default RootHeader;
 
 const thema = store.thema;
 
-const _Wrap = styled(SC._Rect)`
-  width: 100%;
-  height: 100%;
-  background-color: ${thema.main};
+const _Wrap = styled('div')`
+    ${SC.rect}
+    width: 100%;
+    height: 100%;
+    background-color: ${thema.main};
 `;

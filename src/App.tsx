@@ -4,7 +4,7 @@ import Entry from './system/contents/entry';
 
 const App: Component = () => {
   return (
-    <Entry.Component />
+    <Entry />
   );
 };
 
