@@ -8,15 +8,14 @@ const ModeButton = (props: {
     isActive: boolean;
 }) => {
 
-
     return (
-        <_Wrap isActive>{props.name}</_Wrap>
+        <_Wrap isActive={props.isActive}>{props.name}</_Wrap>
     );
 };
 
 export default ModeButton;
 
-const _Wrap = styled('div')<{
+const _Wrap = styled('div') <{
     isActive: boolean;
 }>`
     ${SC.rect}
@@ -30,6 +29,7 @@ const _Wrap = styled('div')<{
     font-weight: 600;
     text-align: center;
     border: 1px solid #fff;
+    background-color: #aadcdd;
     ${props => !props.isActive ? '' : css`
         background-color: #cfcf58;
     `.styles}

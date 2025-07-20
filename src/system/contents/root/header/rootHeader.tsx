@@ -3,12 +3,14 @@ import Thema from "~/system/common/design/thema";
 import { store } from "../../store/store";
 import SC from "~/system/common/styled";
 import ModeButton from "./modeButton";
+import { createMemo } from "solid-js";
 
 const RootHeader = () => {
+  const mode = createMemo(() => store.sys.mode);
   return (
     <_Wrap>
-      <ModeButton name="Outline" isActive={false} />
-      <ModeButton name="Melody" isActive={false} />
+      <ModeButton name="Harmonize" isActive={mode() === "harmonize"} />
+      <ModeButton name="Melody" isActive={mode() === "melody"} />
     </_Wrap>
   );
 };
