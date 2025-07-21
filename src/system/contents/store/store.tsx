@@ -1,10 +1,12 @@
 import { createStore } from "solid-js/store";
 import Thema from "~/system/common/design/thema";
+import StoreControl from "./storeControl";
+import StoreData from "./data/storeData";
+import StoreOutline from "./data/storeOutline";
 
 export type StoreProps = {
-  sys: {
-    mode: "harmonize" | "melody";
-  };
+  control: StoreControl.Props;
+  data: StoreData.Props;
   thema: Thema.Props;
 };
 
@@ -14,7 +16,11 @@ export const [store, setStore] = createStore<StoreProps>({
     accent: "#999",
     sub: "#fff",
   },
-  sys: {
+  control: {
     mode: "harmonize",
+    focus: 1
   },
+  data: {
+    elements: StoreOutline.getInitialElements()
+  }
 });

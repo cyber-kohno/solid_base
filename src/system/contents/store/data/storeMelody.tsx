@@ -1,5 +1,5 @@
-namespace ScoreDataMelody {
+namespace ScoreMelody {
 
 }
 
-export default ScoreDataMelody;
+export default ScoreMelody;

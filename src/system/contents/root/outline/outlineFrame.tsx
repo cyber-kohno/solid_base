@@ -3,12 +3,13 @@ import Thema from "~/system/common/design/thema";
 import { store } from "../../store/store";
 import Layout from "../../const/layout";
 import SC from "~/system/common/styled";
+import OutlineList from "./outlineList";
 
 const OutlineFrame = () => {
 
   return (<_Wrap>
     <_HeaderDiv></_HeaderDiv>
-    <_ListDiv></_ListDiv>
+    <_ListDiv><OutlineList /></_ListDiv>
     <_FooterDiv></_FooterDiv>
   </_Wrap>);
 }

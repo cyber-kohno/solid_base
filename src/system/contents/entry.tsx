@@ -3,20 +3,13 @@ import Thema from "~/system/common/design/thema";
 import RootFrame from "./root/rootFrame";
 import SC from "../common/styled";
 import { setStore, store } from "./store/store";
+import InputRoot from "./input/inputRoot";
 
 
 export const Entry = () => {
 
     return (
-        <_Wrap tabIndex={-1} onKeyDown={(e) => {
-            console.log(e.key);
-            switch (e.key) {
-                case 'r': {
-                    const mode = store.sys.mode;
-                    setStore('sys', 'mode', mode === 'harmonize' ? 'melody' : 'harmonize');
-                }
-            }
-        }}>
+        <_Wrap tabIndex={-1} onKeyDown={InputRoot.onKeyDown}>
             <RootFrame />
         </_Wrap>
     );

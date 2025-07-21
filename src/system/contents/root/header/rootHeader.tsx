@@ -6,7 +6,7 @@ import ModeButton from "./modeButton";
 import { createMemo } from "solid-js";
 
 const RootHeader = () => {
-  const mode = createMemo(() => store.sys.mode);
+  const mode = createMemo(() => store.control.mode);
   return (
     <_Wrap>
       <ModeButton name="Harmonize" isActive={mode() === "harmonize"} />
