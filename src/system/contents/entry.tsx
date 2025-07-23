@@ -1,8 +1,7 @@
 import { styled } from "solid-styled-components";
 import Thema from "~/system/common/design/thema";
-import RootFrame from "./root/rootFrame";
+import RootFrame from "./jsx/rootFrame";
 import SC from "../common/styled";
-import { setStore, store } from "./store/store";
 import InputRoot from "./input/inputRoot";
 
 

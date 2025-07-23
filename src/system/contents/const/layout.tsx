@@ -2,7 +2,7 @@ namespace Layout {
 
     export const root = {
         ROOT_HEADER: 40,
-        OUTLINE_WIDTH: 230,
+        OUTLINE_WIDTH: 210,
     }
     export const timelineHeader = {
         MEMORI_HEIGHT: 40,
@@ -15,7 +15,7 @@ namespace Layout {
 
     }
     export const outline = {
-        HEADER_HEIGHT: 150,
+        HEADER_HEIGHT: 100,
         FOOTER_HEIGHT: 20,
     }
 };

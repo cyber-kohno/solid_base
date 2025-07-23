@@ -1,4 +1,8 @@
-import Reducer from "../store/reducer/reducer";
+import ReducerOutline from "../store/reducer/reducerOutline";
+import ReducerRoot from "../store/reducer/reducerRoot";
+import { store } from "../store/store";
+import InputMelody from "./inputMelody";
+import InputOutline from "./inputOutline";
 
 namespace InputRoot {
 
@@ -7,10 +11,16 @@ namespace InputRoot {
         console.log(e.key);
         switch (e.key) {
             case 'r': {
-                Reducer.control.switchMode();
+                ReducerRoot.switchMode();
             } break;
-            case 'a': {
-                Reducer.control.outline.addTest();
+        }
+
+        switch (store.control.mode) {
+            case 'harmonize': {
+                InputOutline.onKeyDown(e);
+            } break;
+            case 'melody': {
+                InputMelody.onKeyDown(e);
             } break;
         }
     }

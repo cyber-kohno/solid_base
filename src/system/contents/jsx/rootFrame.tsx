@@ -4,6 +4,7 @@ import OutlineFrame from "./outline/outlineFrame";
 import Layout from "../const/layout";
 import SC from "~/system/common/styled";
 import TimelineFrame from "./timeline/timelineFrame";
+import ConsoleFrame from "./console/consoleFrame";
 
 const RootFrame = () => {
     return <>
@@ -18,6 +19,8 @@ const RootFrame = () => {
                 <TimelineFrame />
             </_TimelineDiv>
         </_MainDiv>
+
+        <ConsoleFrame />
     </>;
 }
 

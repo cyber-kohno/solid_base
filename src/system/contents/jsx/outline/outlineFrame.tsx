@@ -1,5 +1,4 @@
 import { styled } from "solid-styled-components";
-import Thema from "~/system/common/design/thema";
 import { store } from "../../store/store";
 import Layout from "../../const/layout";
 import SC from "~/system/common/styled";
@@ -38,6 +37,7 @@ const _ListDiv = styled('div')`
     width: 100%;
     height: calc(100% - ${(layout.HEADER_HEIGHT + layout.FOOTER_HEIGHT).toString()}px);
     background-color: #e9dfdf;
+    overflow: hidden;
 `;
 const _FooterDiv = styled('div')`
     ${SC.rect}

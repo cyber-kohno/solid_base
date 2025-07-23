@@ -3,7 +3,9 @@ namespace StoreControl {
     export type Props = {
         mode: "harmonize" | "melody";
 
-        focus: number;
+        outline: {
+            focus: number;
+        }
     }
 }
 export default StoreControl;

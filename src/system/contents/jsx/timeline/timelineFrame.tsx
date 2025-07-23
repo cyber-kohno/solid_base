@@ -16,7 +16,7 @@ const TimelineFrame = () => {
                 </_Active>
             </_HeaderDiv>
             <_MainDiv>
-                <_PitchDiv><PitchListFrame /></_PitchDiv>
+                <PitchListFrame />
                 <_GridDiv></_GridDiv>
             </_MainDiv>
         </_Wrap>
@@ -28,55 +28,49 @@ export default TimelineFrame;
 const _Wrap = styled(SC._Wrap)`
     /* background-color: #16adc4; */
 `;
-const _HeaderDiv = styled('div')`
+const _HeaderDiv = styled.div`
     ${SC.rect}
     /* background-color: #c416c1; */
     width: 100%;
     height: ${Layout.timeline.HEADER_HEIGHT.toString()}px;
 `;
-const _Blank = styled('div')`
+const _Blank = styled.div`
     ${SC.rect}
     width: ${Layout.timeline.PITCH_WIDTH.toString()}px;
     height: 100%;
 `;
-const _Active = styled('div')`
+const _Active = styled.div`
     ${SC.rect}
     width: calc(100% - ${Layout.timeline.PITCH_WIDTH.toString()}px);
     height: 100%;
 `;
 
-const _MemoriDiv = styled('div')`
+const _MemoriDiv = styled.div`
     ${SC.rect}
     background-color: #b6ebe4;
     width: 100%;
     height: ${Layout.timelineHeader.MEMORI_HEIGHT.toString()}px;
 `;
-const _BlockDiv = styled('div')`
+const _BlockDiv = styled.div`
     ${SC.rect}
     background-color: #cd68cb;
     width: 100%;
     height: ${Layout.timelineHeader.BLOCK_HEIGHT.toString()}px;
 `;
-const _InfoDiv = styled('div')`
+const _InfoDiv = styled.div`
     ${SC.rect}
     background-color: #d9b4d8;
     width: 100%;
     height: ${Layout.timelineHeader.INFO_HEIGHT.toString()}px;
 `;
 
-const _MainDiv = styled('div')`
+const _MainDiv = styled.div`
     ${SC.rect}
     background-color: #16c4b0;
     width: 100%;
     height: calc(100% - ${Layout.timeline.HEADER_HEIGHT.toString()}px);
 `;
-const _PitchDiv = styled('div')`
-    ${SC.rect}
-    background-color: #16c450;
-    width: ${Layout.timeline.PITCH_WIDTH.toString()}px;
-    height: 100%;
-`;
-const _GridDiv = styled('div')`
+const _GridDiv = styled.div`
     ${SC.rect}
     background-color: #6716c4;
     width: calc(100% - ${Layout.timeline.PITCH_WIDTH.toString()}px);
