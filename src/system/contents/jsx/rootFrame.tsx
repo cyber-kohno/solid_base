@@ -4,7 +4,10 @@ import OutlineFrame from "./outline/outlineFrame";
 import Layout from "../const/layout";
 import SC from "~/system/common/styled";
 import TimelineFrame from "./timeline/timelineFrame";
-import ConsoleFrame from "./console/consoleFrame";
+import TerminalFrame from "./terminal/terminalFrame";
+import { Show } from "solid-js";
+import { store } from "../store/store";
+import ReducerTerminal from "../store/reducer/reducerTerminal";
 
 const RootFrame = () => {
     return <>
@@ -20,7 +23,8 @@ const RootFrame = () => {
             </_TimelineDiv>
         </_MainDiv>
 
-        <ConsoleFrame />
+        <Show when={ReducerTerminal.isUse()}>{<TerminalFrame />}</Show>
+
     </>;
 }
 

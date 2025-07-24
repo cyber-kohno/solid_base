@@ -3,9 +3,11 @@ import Thema from "~/system/common/design/thema";
 import StoreControl from "./storeControl";
 import StoreData from "./data/storeData";
 import StoreOutline from "./data/storeOutline";
+import StoreTerminal from "./storeTerminal";
 
 export type StoreProps = {
     control: StoreControl.Props;
+    terminal: null | StoreTerminal.Props;
     data: StoreData.Props;
     thema: Thema.Props;
 
@@ -33,6 +35,7 @@ export const [store, setStore] = createStore<StoreProps>({
             focus: 1
         }
     },
+    terminal: null,
     data: {
         elements: StoreOutline.getInitialElements()
     },

@@ -6,6 +6,7 @@ namespace InputOutline {
 
     export const onKeyDown = (e: KeyboardEvent) => {
 
+        // console.log('InputOutline');
         switch (e.key) {
             case 'a': {
                 const data: StoreOutline.DataChord = {

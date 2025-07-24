@@ -6,9 +6,6 @@ namespace SC {
     export const rect = css`
         display: inline-block;
         position: relative;
-        /* width: 100px;
-        height: 100px;
-        background-color: #40ecd5; */
         vertical-align: top;
     `.styles;
     export const absolute = (props: {
@@ -42,7 +39,6 @@ namespace SC {
         margin-left: ${props.margin ?? 0}px;
         width: calc(100% - ${(props.margin ?? 0) * 2}px);
         height: calc(100% - ${(props.margin ?? 0) * 2}px);
-        background-color: #40ecd5;
     `.styles;
 
     export const _Rect = styled('div')`
