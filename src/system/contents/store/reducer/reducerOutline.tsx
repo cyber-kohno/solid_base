@@ -13,6 +13,15 @@ namespace ReducerOutline {
     export const moveFocus = (val: number) => {
         setStore('control', 'outline', 'focus', focus => focus + val);
     }
+
+    export const renmaeSectionData = (value: string) => {
+        const elementIndex = store.control.outline.focus;
+        const element = store.data.elements[elementIndex];
+        if(element.type !== 'section') throw Error(`section要素でない。[${element.type}]`);
+        // const data = element.data as StoreOutline.DataSection;
+        // data.name = value;
+        setStore('data', 'elements', elementIndex, 'data', 'name', value);
+    }
 }
 
 export default ReducerOutline;

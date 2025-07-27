@@ -14,7 +14,7 @@ const TerminalFrame = () => {
 
   return (<_Div><_Wrap>
     <For each={terminal().histories}>{getJsx => {
-      return <_Record>{getJsx()}</_Record>
+      return getJsx();
     }}</For>
     <_Record isCurrent={true}>
       <_TargetSpan>{terminal().target + '>'}</_TargetSpan>

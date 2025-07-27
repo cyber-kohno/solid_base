@@ -17,11 +17,13 @@ const Element = (props: {
 }) => {
 
     const dataJsx = createMemo((() => {
-        const type = props.element.type;
+        const element = props.element;
+        const type = element.type;
+        const data = element.data;
         switch (type) {
-            case 'init': return <DataInit />;
-            case 'section': return <DataSection />;
-            case 'chord': return <DataChord />;
+            case 'init': return <DataInit data={data}/>;
+            case 'section': return <DataSection data={data}/>;
+            case 'chord': return <DataChord  data={data}/>;
             case 'modulate': return <DataModulate />;
         }
         throw new Error(`type:[${type}]のcaseが未定義。`);

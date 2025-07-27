@@ -15,7 +15,7 @@ namespace InputRoot {
             return;
         }
 
-        console.log(e.key);
+        // console.log(e.key);
         switch (e.key) {
             case 'r': {
                 ReducerRoot.switchMode();

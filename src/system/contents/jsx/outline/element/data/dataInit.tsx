@@ -1,7 +1,10 @@
 import { styled } from "solid-styled-components";
 import SC from "~/system/common/styled";
+import StoreOutline from "~/system/contents/store/data/storeOutline";
 
-const DataInit = () => {
+const DataInit = (props: {
+    data: StoreOutline.DataInit;
+}) => {
 
     return (<>
         <_TonalityDiv></_TonalityDiv>

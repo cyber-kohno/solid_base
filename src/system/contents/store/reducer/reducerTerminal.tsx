@@ -51,7 +51,7 @@ namespace ReducerTerminal {
         const terminal = { ...getTerminal() };
         terminal.focus = 0;
         terminal.histories = terminal.histories.slice();
-        terminal.histories.push(() => `${terminal.target}>${terminal.order}`);
+        // terminal.histories.push(() => `${terminal.target}>${terminal.order}`);
         logs.forEach(l => terminal.histories.push(l));
         terminal.order = '';
         setStore('terminal', terminal);

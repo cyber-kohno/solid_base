@@ -1,25 +1,27 @@
-import { createMemo } from "solid-js";
+import { JSX } from "solid-js/jsx-runtime";
 import ReducerTerminal from "../store/reducer/reducerTerminal";
-import { styled } from "solid-styled-components";
+import FunctionRegister from "./functionRegister";
+import LogBuilder from "./logBuilder";
 
 namespace TerminalManager {
 
     export const registOrder = () => {
-        const terminal = ReducerTerminal.getTerminal();
-        
-        const orderItems = terminal.order.split(' ');
-        const func = orderItems[0];
-        const args = orderItems.slice(1);
+        const logs: (() => JSX.Element)[] = [];
 
+        const terminal = ReducerTerminal.getTerminal();
+        logs.push(LogBuilder.history(terminal.target, terminal.order));
+
+        if (terminal.order !== '') {
+            const orderItems = terminal.order.split(' ');
+            const funcName = orderItems[0];
+            const args = orderItems.slice(1);
+
+            logs.push(...FunctionRegister.execute(terminal.target, funcName, args));
+        }
         return {
-            logs: [()=><><_Func>{`func:[${func}]`}</_Func> {`args:[${args.join(', ')}]`}</>]
+            logs
         };
     }
 
 }
 export default TerminalManager;
-
-const _Func = styled.span`
-    background-color: #ff0000a3;
-    border-radius: 4px;
-`;

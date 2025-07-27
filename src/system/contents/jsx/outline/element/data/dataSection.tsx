@@ -1,10 +1,13 @@
 import { styled } from "solid-styled-components";
 import SC from "~/system/common/styled";
+import StoreOutline from "~/system/contents/store/data/storeOutline";
 
-const DataSection = () => {
+const DataSection = (props: {
+    data: StoreOutline.DataSection;
+}) => {
 
     return (<>
-        <_Label>{'aa'}</_Label>
+        <_Label>{props.data.name}</_Label>
         <_Border/>
     </>);
 }
