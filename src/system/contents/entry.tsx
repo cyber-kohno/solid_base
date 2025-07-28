@@ -1,5 +1,4 @@
 import { styled } from "solid-styled-components";
-import Thema from "~/system/common/design/thema";
 import RootFrame from "./jsx/rootFrame";
 import SC from "../common/styled";
 import InputRoot from "./input/inputRoot";
@@ -8,7 +7,11 @@ import InputRoot from "./input/inputRoot";
 export const Entry = () => {
 
     return (
-        <_Wrap tabIndex={-1} onKeyDown={InputRoot.onKeyDown}>
+        <_Wrap
+            tabIndex={-1}
+            onKeyDown={InputRoot.onKeyDown}
+            onKeyUp={InputRoot.onKeyUp}
+        >
             <RootFrame />
         </_Wrap>
     );

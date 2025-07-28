@@ -19,7 +19,7 @@ const _Label = styled.div`
     text-align: center;
     width: 100%;
     height: 30px;
-    background-color: #5c75b634;
+    /* background-color: #5c75b634; */
 `;
 
 const _Border = styled.div`
@@ -27,4 +27,4 @@ const _Border = styled.div`
     width: 100%;
     height: 8px;
     background-color: red;
-`
+`;

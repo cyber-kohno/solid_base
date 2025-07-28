@@ -49,7 +49,7 @@ namespace FunctionRegister {
             argNames: [],
             callback: (args: string[]) => {
 
-                ReducerOutline.renmaeSectionData(args[0]);
+                ReducerOutline.renameSectionData(args[0]);
                 return [];
             }
         }

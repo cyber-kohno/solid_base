@@ -1,9 +1,9 @@
 import { createStore } from "solid-js/store";
 import Thema from "~/system/common/design/thema";
-import StoreControl from "./storeControl";
+import StoreControl from "./manage/storeControl";
 import StoreData from "./data/storeData";
 import StoreOutline from "./data/storeOutline";
-import StoreTerminal from "./storeTerminal";
+import StoreTerminal from "./manage/storeTerminal";
 
 export type StoreProps = {
     control: StoreControl.Props;
@@ -11,17 +11,9 @@ export type StoreProps = {
     data: StoreData.Props;
     thema: Thema.Props;
 
-    input: {
-        holdE: boolean;
-        holdD: boolean;
-        holdF: boolean;
-        holdC: boolean;
-        holdX: boolean;
-        holdG: boolean;
-        holdShift: boolean;
-        holdCtrl: boolean;
-    }
+    input: StoreInput.KeyState;
 };
+
 
 export const [store, setStore] = createStore<StoreProps>({
     thema: {

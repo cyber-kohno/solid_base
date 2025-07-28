@@ -5,9 +5,9 @@ import { setStore } from "../store/store";
 
 namespace InputTerminal {
 
-    export const onKeyDown = (e: KeyboardEvent) => {
+    export const control = (eventKey: string) => {
 
-        switch (e.key) {
+        switch (eventKey) {
             case 'Escape': {
                 ReducerTerminal.close();
             } break;
@@ -24,13 +24,13 @@ namespace InputTerminal {
                 ReducerTerminal.moveFocus(1);
             } break;
             default: {
-                // アルファベットと特定の記号の正規表現
-                const isAlphabetOrSymbol = /^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]*$/.test(e.key);
-                if (e.key.length === 1) {
-                    ReducerTerminal.insertOrder(e.key);
+                // 単一文字のキーのみ処理する
+                if (eventKey.length === 1) {
+                    ReducerTerminal.insertOrder(eventKey);
                 }
             } break;
         }
     }
+    
 }
 export default InputTerminal;

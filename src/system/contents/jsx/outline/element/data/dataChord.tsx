@@ -1,21 +1,62 @@
+import { createMemo, For } from "solid-js";
 import { styled } from "solid-styled-components";
 import SC from "~/system/common/styled";
 import StoreOutline from "~/system/contents/store/data/storeOutline";
+import MusicTheory from "~/system/contents/util/musicTheory";
 
 const DataChord = (props: {
     data: StoreOutline.DataChord;
 }) => {
+    
+    const beatTips = createMemo((): number[] => {
+        // const eatHead = -chordInfo.prevEat;
+        // const eatTail = chordInfo.item.eat;
+        // const beat = chordInfo.item.beat;
 
-    return (<>
-        <SeqDiv>{1}</SeqDiv>
-        <_TipDiv></_TipDiv>
-        <_DegreeDiv></_DegreeDiv>
+        const tips = Array.from({ length: props.data.beat }, () => 0);
+
+        // if (eatHead != 0) {
+        //     tips[0] = eatHead;
+        // }
+        // if (eatTail != 0) {
+        //     tips[tips.length - 1] = eatTail;
+        // }
+        return tips;
+    });
+
+    const degreeName = createMemo(() => {
+        const degree = props.data.degree;
+        let degreeName = "-";
+        if (degree != undefined) {
+            degreeName = MusicTheory.getDegreeKeyName(degree) + degree.symbol;
+            if (degree.on != undefined) {
+                degreeName += ` / ${MusicTheory.getDegreeKeyName(degree.on)}`;
+            }
+        }
+        return degreeName;
+    });
+
+    return (<_Wrap>
+        <_SeqDiv>{1}</_SeqDiv>
+        <_TipDiv>
+            <For each={beatTips()}>{tip => {
+
+                return <_BeatTip/>;
+            }}</For>
+        </_TipDiv>
+        <_DegreeDiv>{degreeName()}</_DegreeDiv>
         <_ChordDiv></_ChordDiv>
-    </>);
+    </_Wrap>);
 }
 export default DataChord;
 
-const SeqDiv = styled.div`
+const _Wrap = styled.div`
+    ${SC.rect}
+    width: 100%;
+    height: 100%;
+    background-color: #a7a093;
+`;
+const _SeqDiv = styled.div`
     ${SC.rect}
     width: 100%;
     height: 15px;
@@ -39,7 +80,7 @@ const _TipDiv = styled.div`
 const _BeatTip = styled.div`
     display: inline-block;
     position: relative;
-    /* width: 12px; */
+    width: 12px;
     height: calc(100% - 4px);
     margin: 2px 2px 0 2px;
     background-color: #cec1cbbc;
