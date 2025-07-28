@@ -2,24 +2,24 @@
 
 namespace MusicTheory {
 
-    // export const getBarDivBeatCount = (ts: GlobalStore.TimeSignature) => {
-    //     switch (ts) {
-    //         case '4/4': return 4;
-    //         case '2/4': return 2;
-    //         case '3/4': return 3;
-    //         case '6/8': return 2;
-    //         case '12/8': return 4;
-    //     }
-    // }
-    // export const getBeatDiv16Count = (ts: GlobalStore.TimeSignature) => {
-    //     switch (ts) {
-    //         case '4/4':
-    //         case '2/4':
-    //         case '3/4': return 4;
-    //         case '6/8':
-    //         case '12/8': return 6;
-    //     }
-    // }
+    export const getBarDivBeatCount = (ts: TimeSignature) => {
+        const val = `${ts.den}/${ts.num}`;
+        switch (val) {
+            case '4/4': return 4;
+            case '2/4': return 2;
+            case '3/4': return 3;
+            case '6/8': return 2;
+            case '12/8': return 4;
+        }
+        throw new Error(`拍子[${val}]は不適切な値。`);
+    }
+    export const getBeatDiv16Count = (ts: TimeSignature) => {
+        switch (ts.num) {
+            case 4: return 4;
+            case 8: return 6;
+        }
+        throw new Error(`分子[${ts.num}]は不適切な値。`);
+    }
 
     // export const getNoteRateArr = (ts: GlobalStore.TimeSignature) => {
     //     const beatDiv = getBeatDiv16Count(ts);
@@ -379,6 +379,42 @@ namespace MusicTheory {
         const curIndex = sameLevelArr.findIndex(s => s === symbol);
         return sameLevelArr[curIndex + dir];
     }
+    export type CompiledStruct = {
+        key12: number;
+        name: string;
+        relation: IntervalRelationName;
+    }
+    export const getStructsFromKeyChord = (keyChord: KeyChordProps): CompiledStruct[] => {
+        const structs = getSymbolProps(keyChord.symbol).structs.map(
+            (s: IntervalRelationName) => {
+                const interval = getIntervalFromRelation(s);
+                const index = keyChord.key12 + interval;
+                return {
+                    key12: index,
+                    name: KEY12_SHARP_LIST[index % 12],
+                    relation: s,
+                };
+            },
+        );
+        const on = keyChord.on;
+        if (on != undefined) {
+            /** オンコードと同じ構成音 */
+            const onSameItem = structs.find(s => s.key12 === on.key12);
+            if (onSameItem == undefined) {
+                const index = on.key12;
+                const list = on.isFlat ? KEY12_FLAT_LIST : KEY12_SHARP_LIST;
+                structs.push({
+                    key12: index,
+                    name: list[index],
+                    relation: 'on'
+                });
+            } else {
+                onSameItem.relation = 'on';
+            }
+        }
+        structs.sort((a, b) => a.key12 - b.key12)
+        return structs;
+    };
 
     export const DEGREE7_LIST = [
         'Ⅰ', 'Ⅱ', 'Ⅲ', 'Ⅳ', 'Ⅴ', 'Ⅵ', 'Ⅶ'

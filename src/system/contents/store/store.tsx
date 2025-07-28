@@ -4,6 +4,7 @@ import StoreControl from "./manage/storeControl";
 import StoreData from "./data/storeData";
 import StoreOutline from "./data/storeOutline";
 import StoreTerminal from "./manage/storeTerminal";
+import StoreCache from "./manage/storeCache";
 
 export type StoreProps = {
     control: StoreControl.Props;
@@ -12,6 +13,12 @@ export type StoreProps = {
     thema: Thema.Props;
 
     input: StoreInput.KeyState;
+
+    cache: StoreCache.Props;
+
+    env: {
+        beatWidth: number;
+    }
 };
 
 
@@ -42,4 +49,14 @@ export const [store, setStore] = createStore<StoreProps>({
         holdShift: false,
         holdCtrl: false,
     },
+
+    cache: {
+        baseBlocks: [],
+        chordIndexes: [],
+        elementIndexes: []
+    },
+
+    env: {
+        beatWidth: 100
+    }
 });
