@@ -1,4 +1,5 @@
 import StoreOutline from "../store/data/storeOutline";
+import ReducerCache from "../store/reducer/reducerCache";
 import ReducerOutline from "../store/reducer/reducerOutline";
 import ReducerRoot from "../store/reducer/reducerRoot";
 import MusicTheory from "../util/musicTheory";
@@ -17,16 +18,22 @@ namespace InputOutline {
                     type: 'chord',
                     data
                 });
+                ReducerCache.compileElements();
             } break;
             case 's': {
                 const data: StoreOutline.DataSection = {
                     name: 'section'
-                }
+                };
                 ReducerOutline.insertElement({
                     type: 'section',
                     data
-                })
+                });
+                ReducerCache.compileElements();
             } break;
+            case 'Delete': {
+                ReducerOutline.removeCurElement();
+                ReducerCache.compileElements();
+            }break;
 
             case 'ArrowUp': {
                 ReducerOutline.moveFocus(-1);
@@ -49,6 +56,7 @@ namespace InputOutline {
                     const diatonic = MusicTheory.getDiatonicDegreeChord('major', scaleIndex);
                     chordData.degree = diatonic;
                     ReducerOutline.setChordData(chordData);
+                    ReducerCache.compileElements();
                 }
             } break;
         }
@@ -61,14 +69,15 @@ namespace InputOutline {
 
         callbacks.holdF = () => {
 
-            switch(elementType) {
+            switch (elementType) {
                 case 'chord': {
                     const chordData = ReducerOutline.getCurrentChordData();
 
                     const modBeat = (dir: -1 | 1) => {
                         const temp = chordData.beat + dir;
-                        if(temp >= 1 && temp <= 4) chordData.beat = temp;
+                        if (temp >= 1 && temp <= 4) chordData.beat = temp;
                         ReducerOutline.setChordData(chordData);
+                        ReducerCache.compileElements();
                     }
                     switch (eventKey) {
                         case 'ArrowLeft': modBeat(-1); break;

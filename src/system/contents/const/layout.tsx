@@ -18,6 +18,12 @@ namespace Layout {
         HEADER_HEIGHT: 100,
         FOOTER_HEIGHT: 20,
     }
+
+    export const pitch = {
+        PITCH_FRAME_WIDTH: 80,
+        PITCH_NUM: 94,
+        PITCH_ITEM_HEIGHT: 30
+    }
 };
 
 export default Layout;

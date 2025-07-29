@@ -6,10 +6,10 @@ namespace StoreCache {
     export type Props = {
         baseBlocks: BaseBlock[];
 
-        chordIndexes: ChordIndex[];
+        chordIndexes: ChordInfo[];
         elementIndexes: ElementIndex[];
     }
-    
+
     export interface BeatRange {
         startTime: number;
         sustainTime: number;
@@ -19,7 +19,7 @@ namespace StoreCache {
         lengthBeatNote: number;
 
         viewPosLeft: number;
-        viewPosRight: number;
+        viewPosWidth: number;
     }
     export interface BaseBlock extends BeatRange {
         scoreBase: StoreOutline.DataInit;
@@ -27,10 +27,11 @@ namespace StoreCache {
         chordBlocks: ChordBlock[];
     }
 
-    export interface ChordBlock extends BeatRange{
+    export interface ChordBlock extends BeatRange {
         chordSeq: number;
+        elementSeq: number;
     }
-    
+
     export interface ModulateCahce {
         prevTonality: MusicTheory.Tonality;
         nextTonality: MusicTheory.Tonality;
@@ -45,12 +46,15 @@ namespace StoreCache {
         eatHead: number;
         eatTail: number;
     }
-    
-    export interface ChordIndex extends BeatInfo {
+
+    export type CompiledChord = {
         chord: MusicTheory.KeyChordProps;
-        structs: MusicTheory.CompiledStruct[];
+        structs: MusicTheory.ChordStruct[];
+    };
+    export interface ChordInfo extends BeatInfo {
+        compiledChord?: CompiledChord;
     }
-    
+
     export interface ElementIndex {
         chordSeq: number;
     }

@@ -3,14 +3,14 @@ import StoreOutline from "../data/storeOutline";
 import StoreCache from "../manage/storeCache";
 import { setStore, store, StoreProps } from "../store";
 
-namespace ReducerRoot {
+namespace ReducerCache {
 
     export const compileElements = () => {
         const elements = store.data.elements;
 
         const baseList: StoreCache.BaseBlock[] = [];
         const elementIndexes: StoreCache.ElementIndex[] = [];
-        const chordIndexes: StoreCache.ChordIndex[] = [];
+        const chordIndexes: StoreCache.ChordInfo[] = [];
 
         const initialScoreBase: StoreOutline.DataInit = elements[0].data;
 
@@ -22,7 +22,7 @@ namespace ReducerRoot {
             lengthBeat: 0,
             lengthBeatNote: 0,
             viewPosLeft: 0,
-            viewPosRight: 0,
+            viewPosWidth: 0,
             chordBlocks: [],
             scoreBase: JSON.parse(JSON.stringify(initialScoreBase))
         }
@@ -41,6 +41,9 @@ namespace ReducerRoot {
 
         elements.forEach((el, i) => {
             let beatSize = 0;
+            const elementIndex: StoreCache.ElementIndex = {
+                chordSeq: -1
+            }
 
             switch (el.type) {
                 case 'section': {
@@ -54,20 +57,19 @@ namespace ReducerRoot {
                     lastChordSeq++;
 
                     const data = el.data as StoreOutline.DataChord;
-                    let chord: MusicTheory.KeyChordProps | undefined = undefined;
-                    let structs: undefined | MusicTheory.StructProps[] = undefined;
 
+                    let compiledChord: StoreCache.CompiledChord | undefined = undefined;
                     if (data.degree != undefined) {
                         const tonality = baseBlock.scoreBase.tonality;
-                        chord = MusicTheory.getKeyChordFromDegree(tonality, data.degree);
+                        const chord = MusicTheory.getKeyChordFromDegree(tonality, data.degree);
                         const symbol = MusicTheory.getSymbolProps(chord.symbol);
-                        structs = symbol.structs.map(s => {
+                        const structs: MusicTheory.ChordStruct[] = symbol.structs.map(s => {
                             if (chord == undefined) throw new Error('chordはundefinedであってはならない。');
                             const interval = MusicTheory.getIntervalFromRelation(s);
 
                             return {
                                 key12: (chord.key12 + interval) % 12,
-                                relation: s
+                                relation: s,
                             }
                         });
 
@@ -85,13 +87,9 @@ namespace ReducerRoot {
                                 same.relation = 'on';
                             }
                         }
+
+                        compiledChord = { chord, structs };
                     }
-                    const item: StoreOutline.KeyChord = {
-                        beat: data.beat,
-                        eat: data.eat,
-                        chord,
-                        structs
-                    };
 
                     /**
                      * 小節跨ぎを判定する
@@ -102,11 +100,11 @@ namespace ReducerRoot {
                         const baseOnBeat = startBeat - baseBlock.startBeat;
                         const divCnt = MusicTheory.getBarDivBeatCount(baseBlock.scoreBase.ts);
                         const curBar = Math.floor(baseOnBeat / divCnt);
-                        const nextBar = Math.floor((baseOnBeat + item.beat) / divCnt);
+                        const nextBar = Math.floor((baseOnBeat + data.beat) / divCnt);
                         // 同じ小説に収まっている
                         const isSameBar = curBar === nextBar;
                         // 次の小節の頭に揃っている
-                        const isNextFit = (nextBar - curBar === 1 && (baseOnBeat + item.beat) % divCnt === 0);
+                        const isNextFit = (nextBar - curBar === 1 && (baseOnBeat + data.beat) % divCnt === 0);
                         return !(isSameBar || isNextFit);
                     };
 
@@ -119,15 +117,53 @@ namespace ReducerRoot {
                     const viewPosLeft = viewPos;
                     const viewPosWidth = beatSize * store.env.beatWidth;
                     viewPos += viewPosWidth;
+                    console.log(viewPosLeft);
+                    console.log(viewPosWidth);
 
                     const sustainTime = (60000 / baseBlock.scoreBase.tempo) * (data.beat + (-prevEat + data.eat) / 4);
 
+                    const chordBlock: StoreCache.ChordBlock = {
+                        elementSeq: i,
+                        startBeat,
+                        lengthBeat: data.beat,
+                        startBeatNote,
+                        lengthBeatNote: data.beat * beatRate,
+                        chordSeq: lastChordSeq,
+                        viewPosLeft,
+                        viewPosWidth,
+                        sustainTime,
+                        startTime: elapsedTime
+                    };
+
+                    baseBlock.chordBlocks.push(chordBlock);
+                    const chordInfo: StoreCache.ChordInfo = {
+                        beat: data.beat,
+                        eatHead: prevEat,
+                        eatTail: data.eat,
+                        compiledChord
+                    }
+                    chordIndexes.push(chordInfo);
+                    elementIndex.chordSeq = lastChordSeq;
+
+                    // 経過時間の加算
+                    elapsedTime += sustainTime;
+                    prevEat = data.eat;
+                    baseBlock.sustainTime += sustainTime;
+                    baseBlock.lengthBeat += data.beat;
+                    baseBlock.lengthBeatNote += data.beat * beatRate;
                 } break;
             }
+            elementIndexes.push(elementIndex);
         });
 
+        // 後処理
+        baseBlock.viewPosWidth = viewPos - baseBlock.viewPosLeft;
+        baseList.push(baseBlock);
+
         setStore('cache', 'baseBlocks', baseList);
+        setStore('cache', 'chordIndexes', chordIndexes);
+        setStore('cache', 'elementIndexes', elementIndexes);
     };
 }
 
-export default ReducerRoot;
+export default ReducerCache;

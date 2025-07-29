@@ -2,6 +2,7 @@ import { styled } from "solid-styled-components";
 import SC from "~/system/common/styled";
 import Layout from "../../const/layout";
 import PitchListFrame from "./pitch/pitchListFrame";
+import GridRootFrame from "./grid/gridRootFrame";
 
 const TimelineFrame = () => {
 
@@ -17,7 +18,7 @@ const TimelineFrame = () => {
             </_HeaderDiv>
             <_MainDiv>
                 <PitchListFrame />
-                <_GridDiv></_GridDiv>
+                <GridRootFrame />
             </_MainDiv>
         </_Wrap>
     );
@@ -69,10 +70,4 @@ const _MainDiv = styled.div`
     background-color: #16c4b0;
     width: 100%;
     height: calc(100% - ${Layout.timeline.HEADER_HEIGHT.toString()}px);
-`;
-const _GridDiv = styled.div`
-    ${SC.rect}
-    background-color: #6716c4;
-    width: calc(100% - ${Layout.timeline.PITCH_WIDTH.toString()}px);
-    height: 100%;
 `;

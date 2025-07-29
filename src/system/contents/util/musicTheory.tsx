@@ -379,12 +379,12 @@ namespace MusicTheory {
         const curIndex = sameLevelArr.findIndex(s => s === symbol);
         return sameLevelArr[curIndex + dir];
     }
-    export type CompiledStruct = {
+    export type ChordStruct = {
         key12: number;
-        name: string;
+        // name: string;
         relation: IntervalRelationName;
     }
-    export const getStructsFromKeyChord = (keyChord: KeyChordProps): CompiledStruct[] => {
+    export const getStructsFromKeyChord = (keyChord: KeyChordProps): ChordStruct[] => {
         const structs = getSymbolProps(keyChord.symbol).structs.map(
             (s: IntervalRelationName) => {
                 const interval = getIntervalFromRelation(s);
