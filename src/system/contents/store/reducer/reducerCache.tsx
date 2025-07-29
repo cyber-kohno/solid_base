@@ -117,8 +117,8 @@ namespace ReducerCache {
                     const viewPosLeft = viewPos;
                     const viewPosWidth = beatSize * store.env.beatWidth;
                     viewPos += viewPosWidth;
-                    console.log(viewPosLeft);
-                    console.log(viewPosWidth);
+                    // console.log(viewPosLeft);
+                    // console.log(viewPosWidth);
 
                     const sustainTime = (60000 / baseBlock.scoreBase.tempo) * (data.beat + (-prevEat + data.eat) / 4);
 
@@ -164,6 +164,13 @@ namespace ReducerCache {
         setStore('cache', 'chordIndexes', chordIndexes);
         setStore('cache', 'elementIndexes', elementIndexes);
     };
+
+    export const getChordInfoFromElementSeq = (elementSeq: number) => {
+        const cache = store.cache;
+        const chordSeq = cache.elementIndexes[elementSeq].chordSeq;
+        if(chordSeq === -1) throw new Error(`elementSeq[${elementSeq}]のchordSeqが存在しない。（コードでない要素でgetChordInfoFromElementSeqを呼び出した。）`);
+        return cache.chordIndexes[chordSeq];
+    }
 }
 
 export default ReducerCache;

@@ -3,6 +3,9 @@ import SC from "~/system/common/styled";
 import Layout from "../../const/layout";
 import PitchListFrame from "./pitch/pitchListFrame";
 import GridRootFrame from "./grid/gridRootFrame";
+import ChordListFrame from "./header/chordListFrame";
+import BeatMeasureFrame from "./header/BeatMeasureFrame";
+import ProgressInfoFrame from "./header/progressInfoFrame";
 
 const TimelineFrame = () => {
 
@@ -11,9 +14,9 @@ const TimelineFrame = () => {
             <_HeaderDiv>
                 <_Blank />
                 <_Active>
-                    <_MemoriDiv></_MemoriDiv>
-                    <_BlockDiv></_BlockDiv>
-                    <_InfoDiv></_InfoDiv>
+                    <BeatMeasureFrame />
+                    <ChordListFrame />
+                    <ProgressInfoFrame />
                 </_Active>
             </_HeaderDiv>
             <_MainDiv>
@@ -44,25 +47,6 @@ const _Active = styled.div`
     ${SC.rect}
     width: calc(100% - ${Layout.timeline.PITCH_WIDTH.toString()}px);
     height: 100%;
-`;
-
-const _MemoriDiv = styled.div`
-    ${SC.rect}
-    background-color: #b6ebe4;
-    width: 100%;
-    height: ${Layout.timelineHeader.MEMORI_HEIGHT.toString()}px;
-`;
-const _BlockDiv = styled.div`
-    ${SC.rect}
-    background-color: #cd68cb;
-    width: 100%;
-    height: ${Layout.timelineHeader.BLOCK_HEIGHT.toString()}px;
-`;
-const _InfoDiv = styled.div`
-    ${SC.rect}
-    background-color: #d9b4d8;
-    width: 100%;
-    height: ${Layout.timelineHeader.INFO_HEIGHT.toString()}px;
 `;
 
 const _MainDiv = styled.div`

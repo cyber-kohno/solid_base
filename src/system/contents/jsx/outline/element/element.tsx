@@ -23,7 +23,7 @@ const Element = (props: {
         switch (type) {
             case 'init': return <DataInit data={data}/>;
             case 'section': return <DataSection data={data}/>;
-            case 'chord': return <DataChord  data={data}/>;
+            case 'chord': return <DataChord  data={data} index={props.index}/>;
             case 'modulate': return <DataModulate />;
         }
         throw new Error(`type:[${type}]のcaseが未定義。`);

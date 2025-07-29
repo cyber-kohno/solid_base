@@ -2,10 +2,13 @@ import { createMemo, For } from "solid-js";
 import { styled } from "solid-styled-components";
 import SC from "~/system/common/styled";
 import StoreOutline from "~/system/contents/store/data/storeOutline";
+import ReducerCache from "~/system/contents/store/reducer/reducerCache";
+import { store } from "~/system/contents/store/store";
 import MusicTheory from "~/system/contents/util/musicTheory";
 
 const DataChord = (props: {
     data: StoreOutline.DataChord;
+    index: number;
 }) => {
     
     const beatTips = createMemo((): number[] => {
@@ -36,6 +39,12 @@ const DataChord = (props: {
         return degreeName;
     });
 
+    const chordName = createMemo(() => {
+        const chordInfo = ReducerCache.getChordInfoFromElementSeq(props.index);
+        if (chordInfo.compiledChord == undefined) return '-';
+        return MusicTheory.getKeyChordName(chordInfo.compiledChord.chord);
+    });
+
     return (<_Wrap>
         <_SeqDiv>{1}</_SeqDiv>
         <_TipDiv>
@@ -45,7 +54,7 @@ const DataChord = (props: {
             }}</For>
         </_TipDiv>
         <_DegreeDiv>{degreeName()}</_DegreeDiv>
-        <_ChordDiv></_ChordDiv>
+        <_ChordDiv>{chordName()}</_ChordDiv>
     </_Wrap>);
 }
 export default DataChord;

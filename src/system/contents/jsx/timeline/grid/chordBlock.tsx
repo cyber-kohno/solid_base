@@ -30,7 +30,7 @@ const _Wrap = styled.div<{
     isFocus: boolean;
 }>`
     display: inline-block;
-    position: relative;
+    position: absolute;
     z-index: 1;
 
     background-color: #ffffff5b;
