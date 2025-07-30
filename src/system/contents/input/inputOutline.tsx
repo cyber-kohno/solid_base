@@ -1,12 +1,15 @@
 import StoreOutline from "../store/data/storeOutline";
-import ReducerCache from "../store/reducer/reducerCache";
-import ReducerOutline from "../store/reducer/reducerOutline";
-import ReducerRoot from "../store/reducer/reducerRoot";
+import useReducerCache from "../store/reducer/reducerCache";
+import useReducerOutline from "../store/reducer/reducerOutline";
+import { store, StoreProps } from "../store/store";
 import MusicTheory from "../util/musicTheory";
 
-namespace InputOutline {
+const useInputOutline = () => {
 
-    export const control = (eventKey: string) => {
+    const reducerOutline = useReducerOutline();
+    const reducerCache = useReducerCache();
+
+    const control = (eventKey: string) => {
 
         switch (eventKey) {
             case 'a': {
@@ -14,32 +17,32 @@ namespace InputOutline {
                     beat: 4,
                     eat: 0
                 }
-                ReducerOutline.insertElement({
+                reducerOutline.insertElement({
                     type: 'chord',
                     data
                 });
-                ReducerCache.calculate();
+                reducerCache.calculate();
             } break;
             case 's': {
                 const data: StoreOutline.DataSection = {
                     name: 'section'
                 };
-                ReducerOutline.insertElement({
+                reducerOutline.insertElement({
                     type: 'section',
                     data
                 });
-                ReducerCache.calculate();
+                reducerCache.calculate();
             } break;
             case 'Delete': {
-                ReducerOutline.removeCurElement();
-                ReducerCache.calculate();
-            }break;
+                reducerOutline.removeCurElement();
+                reducerCache.calculate();
+            } break;
 
             case 'ArrowUp': {
-                ReducerOutline.moveFocus(-1);
+                reducerOutline.moveFocus(-1);
             } break;
             case 'ArrowDown': {
-                ReducerOutline.moveFocus(1);
+                reducerOutline.moveFocus(1);
             } break;
             case '1':
             case '2':
@@ -49,35 +52,36 @@ namespace InputOutline {
             case '6':
             case '7': {
                 // if (isLock) break;
-                const element = ReducerOutline.getCurrentElement();
+                const element = reducerOutline.getCurrentElement();
                 if (element.type === 'chord') {
                     const chordData: StoreOutline.DataChord = { ...element.data };
                     const scaleIndex = Number(eventKey) - 1;
                     const diatonic = MusicTheory.getDiatonicDegreeChord('major', scaleIndex);
                     chordData.degree = diatonic;
-                    ReducerOutline.setChordData(chordData);
-                    ReducerCache.calculate();
+                    reducerOutline.setChordData(chordData);
+                    reducerCache.calculate();
                 }
             } break;
         }
     }
 
-    export const getHoldCallbacks = (eventKey: string): StoreInput.Callbacks => {
+    const getHoldCallbacks = (eventKey: string): StoreInput.Callbacks => {
+
         const callbacks: StoreInput.Callbacks = {};
 
-        const elementType = ReducerOutline.getCurrentElement().type;
+        const elementType = reducerOutline.getCurrentElement().type;
 
         callbacks.holdF = () => {
 
             switch (elementType) {
                 case 'chord': {
-                    const chordData = ReducerOutline.getCurrentChordData();
+                    const chordData = reducerOutline.getCurrentChordData();
 
                     const modBeat = (dir: -1 | 1) => {
                         const temp = chordData.beat + dir;
                         if (temp >= 1 && temp <= 4) chordData.beat = temp;
-                        ReducerOutline.setChordData(chordData);
-                        ReducerCache.calculate();
+                        reducerOutline.setChordData(chordData);
+                        reducerCache.calculate();
                     }
                     switch (eventKey) {
                         case 'ArrowLeft': modBeat(-1); break;
@@ -88,5 +92,10 @@ namespace InputOutline {
         }
         return callbacks;
     }
+
+    return {
+        control,
+        getHoldCallbacks
+    };
 }
-export default InputOutline;
+export default useInputOutline;

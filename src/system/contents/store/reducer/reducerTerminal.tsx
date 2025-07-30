@@ -1,19 +1,18 @@
 import assert from "assert";
-import { setStore, store } from "../store";
+import { store, StoreProps, useGlobalStore } from "../store";
 import TerminalManager from "../../terminal/terminalManager";
 
-namespace ReducerTerminal {
-
-    export const getTerminal = () => {
+const useReducerTerminal = () => {
+    const getTerminal = () => {
         const terminal = store.terminal;
         if (terminal == null) throw new Error('terminalがnullでgetTerminalを呼び出さしてはならない。');
         return terminal;
     }
 
-    export const isUse = () => store.terminal != null;
+    const isUse = () => store.terminal != null;
 
-    export const open = () => {
-        setStore('terminal', {
+    const open = () => {
+        store.terminal = {
             histories: [],
             target: (() => {
                 const control = store.control;
@@ -40,12 +39,12 @@ namespace ReducerTerminal {
             })(),
             order: '',
             focus: 0
-        });
+        };
     };
-    export const close = () => {
-        setStore('terminal', null);
+    const close = () => {
+        store.terminal = null;
     };
-    export const registOrder = () => {
+    const registOrder = () => {
         const { logs } = TerminalManager.registOrder();
 
         const terminal = { ...getTerminal() };
@@ -54,14 +53,15 @@ namespace ReducerTerminal {
         // terminal.histories.push(() => `${terminal.target}>${terminal.order}`);
         logs.forEach(l => terminal.histories.push(l));
         terminal.order = '';
-        setStore('terminal', terminal);
+        store.terminal = terminal;
     }
 
-    export const setOrder = (callback: (prev: string) => string) => {
-        setStore('terminal', 'order', callback);
+    const setOrder = (callback: (prev: string) => string) => {
+        const terminal = getTerminal();
+        terminal.order = callback(terminal.order);
     }
 
-    export const splitOrder = () => {
+    const splitOrder = () => {
         const terminal = getTerminal();
         const splitStringAtIndex = (str: string, index: number) => {
             return [str.slice(0, index), str.slice(index)];
@@ -69,26 +69,37 @@ namespace ReducerTerminal {
         return splitStringAtIndex(terminal.order, terminal.focus);
     }
 
-    export const removeOrder = () => {
+    const removeOrder = () => {
         const [left, right] = splitOrder();
         if (left.length === 0) return;
         setOrder(() => left.slice(0, left.length - 1) + right);
-        setStore('terminal', 'focus', prev => prev - 1);
+        getTerminal().focus--;
     }
 
-    export const insertOrder = (key: string) => {
+    const insertOrder = (key: string) => {
         const [left, right] = splitOrder();
         setOrder(() => left + key + right);
-        setStore('terminal', 'focus', prev => prev + key.length);
+        getTerminal().focus += key.length;
     }
 
-    export const moveFocus = (dir: -1 | 1) => {
-        setStore('terminal', 'focus', prev => {
-            const newFocus = prev + dir;
-            const order = getTerminal().order;
-            return newFocus >= 0 && newFocus <= order.length ? newFocus : prev;
-        });
+    const moveFocus = (dir: -1 | 1) => {
+        const terminal = getTerminal();
+        const newFocus = terminal.focus + dir;
+        const order = terminal.order;
+        if (newFocus >= 0 && newFocus <= order.length) terminal.focus = newFocus;
+    }
+
+    return {
+        getTerminal,
+        isUse,
+        open,
+        close,
+        registOrder,
+        splitOrder,
+        removeOrder,
+        insertOrder,
+        moveFocus
     }
 }
 
-export default ReducerTerminal;
+export default useReducerTerminal;

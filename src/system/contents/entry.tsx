@@ -1,16 +1,18 @@
 import { styled } from "solid-styled-components";
 import RootFrame from "./jsx/rootFrame";
 import SC from "../common/styled";
-import InputRoot from "./input/inputRoot";
+import useInputRoot from "./input/inputRoot";
+import { useGlobalStore } from "./store/store";
 
 
 export const Entry = () => {
+    const inputRoot = useInputRoot();
 
     return (
         <_Wrap
             tabIndex={-1}
-            onKeyDown={InputRoot.onKeyDown}
-            onKeyUp={InputRoot.onKeyUp}
+            onKeyDown={inputRoot.onKeyDown}
+            onKeyUp={inputRoot.onKeyUp}
         >
             <RootFrame />
         </_Wrap>

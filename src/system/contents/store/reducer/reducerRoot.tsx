@@ -1,21 +1,26 @@
-import StoreOutline from "../data/storeOutline";
-import { setStore, store, StoreProps } from "../store";
+import { store, StoreProps } from "../store";
 
-namespace ReducerRoot {
+const useReducerRoot = () => {
 
-    export const switchMode = () => {
+     const switchMode = () => {
         const mode = store.control.mode;
-        setStore('control', 'mode', mode === 'harmonize' ? 'melody' : 'harmonize');
+        store.control.mode= mode === 'harmonize' ? 'melody' : 'harmonize';
     };
 
-    export type InputKey = keyof StoreProps['input'];
-    export const setInputHold = (key: InputKey, isDown: boolean) => {
-        setStore('input', key, isDown);
+     type InputKey = keyof StoreProps['input'];
+     const setInputHold = (key: InputKey, isDown: boolean) => {
+        store.input[key] = isDown;
     }
 
-    export const hasHold = () => {
+     const hasHold = () => {
         return Object.values(store.input).find(flg => flg) != undefined;
     }
+
+    return {
+        switchMode,
+        setInputHold,
+        hasHold
+    };
 }
 
-export default ReducerRoot;
+export default useReducerRoot;

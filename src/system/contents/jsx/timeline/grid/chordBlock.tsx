@@ -1,15 +1,16 @@
 import { css } from "@emotion/react";
 import { styled } from "solid-styled-components";
 import StoreCache from "~/system/contents/store/manage/storeCache";
-import { store } from "~/system/contents/store/store";
+import { useGlobalStore } from "~/system/contents/store/store";
 
 const ChordBlock = (props: {
     cache: StoreCache.ChordCache;
 }) => {
+    const {snapshot} = useGlobalStore();
 
     return <>{() => {
         const cache = props.cache;
-        const focus = store.control.outline.focus;
+        const focus = snapshot.control.outline.focus;
         return (
 
             <_Wrap

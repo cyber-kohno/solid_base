@@ -1,14 +1,20 @@
 import { createEffect, createMemo, For } from "solid-js";
 import { keyframes, styled } from "solid-styled-components";
 import SC from "~/system/common/styled";
-import ReducerTerminal from "../../store/reducer/reducerTerminal";
+import useReducerTerminal from "../../store/reducer/reducerTerminal";
 import { css } from "@emotion/react";
+import { useGlobalStore } from "../../store/store";
+import useAccessorTerminal from "../../store/accessor/accessorTerminal";
 
 const TerminalFrame = () => {
 
-  const terminal = createMemo(() => ReducerTerminal.getTerminal());
+  const {snapshot} = useGlobalStore();
 
-  const splitOrder = createMemo(() => ReducerTerminal.splitOrder());
+  const accessorTerminal = useAccessorTerminal(snapshot);
+
+  const terminal = createMemo(() => accessorTerminal.getTerminal());
+
+  const splitOrder = createMemo(() => accessorTerminal.getSplitOrder());
 
   const convHtmlText = (str: string) => str.replace(/ /g, '\u00A0');
 

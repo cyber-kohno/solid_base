@@ -1,12 +1,13 @@
 import { styled } from "solid-styled-components";
-import Thema from "~/system/common/design/thema";
-import { store } from "../../store/store";
 import SC from "~/system/common/styled";
 import ModeButton from "./modeButton";
 import { createMemo } from "solid-js";
+import { useGlobalStore } from "../../store/store";
 
 const RootHeader = () => {
-  const mode = createMemo(() => store.control.mode);
+  const {snapshot} = useGlobalStore();
+
+  const mode = createMemo(() => snapshot.control.mode);
   return (
     <_Wrap>
       <ModeButton name="Harmonize" isActive={mode() === "harmonize"} />
@@ -17,11 +18,9 @@ const RootHeader = () => {
 
 export default RootHeader;
 
-const thema = store.thema;
-
 const _Wrap = styled("div")`
   ${SC.rect}
   width: 100%;
   height: 100%;
-  background-color: ${thema.main};
+  background-color: #fda;
 `;

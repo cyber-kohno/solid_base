@@ -3,7 +3,7 @@ import { styled } from "solid-styled-components";
 import SC from "~/system/common/styled";
 import Layout from "~/system/contents/const/layout";
 import StoreCache from "~/system/contents/store/manage/storeCache";
-import { store } from "~/system/contents/store/store";
+import { useGlobalStore } from "~/system/contents/store/store";
 import MusicTheory from "~/system/contents/util/musicTheory";
 import ChordBlock from "./chordBlock";
 
@@ -12,6 +12,7 @@ const BaseBlock = (props: {
     baseBlock: StoreCache.BaseCache;
     index: number;
 }) => {
+    const {snapshot} = useGlobalStore();
 
     const baseBlock = createMemo(() => props.baseBlock);
 
@@ -19,7 +20,7 @@ const BaseBlock = (props: {
         baseBlock().scoreBase.ts,
     ));
 
-    const beatWidth = createMemo(() => store.env.beatWidth * (beatDiv16Count() / 4));
+    const beatWidth = createMemo(() => snapshot.env.beatWidth * (beatDiv16Count() / 4));
 
     const measureLines = createMemo(() => {
         const list: {
@@ -61,7 +62,7 @@ const BaseBlock = (props: {
         return list;
     });
 
-    const chordCaches = createMemo(() => store.cache.chordCaches.filter(c => c.baseSeq === props.index));
+    const chordCaches = createMemo(() => snapshot.cache.chordCaches.filter(c => c.baseSeq === props.index));
 
     return (
         <_Wrap left={baseBlock().viewPosLeft} width={baseBlock().viewPosWidth}>

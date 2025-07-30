@@ -1,14 +1,15 @@
 import { createMemo, For } from "solid-js";
-import { store } from "../../store/store";
 import Element from "./element/element";
 import { styled } from "solid-styled-components";
 import SC from "~/system/common/styled";
 import Layout from "../../const/layout";
+import { useGlobalStore } from "../../store/store";
 
 const ElementList = () => {
+    const {snapshot} = useGlobalStore();
 
     const elements = createMemo(() => {
-        return store.cache.elementCaches;
+        return snapshot.cache.elementCaches;
     });
     return (<_Wrap>
 

@@ -3,8 +3,6 @@ import { styled } from "solid-styled-components";
 import SC from "~/system/common/styled";
 import StoreOutline from "~/system/contents/store/data/storeOutline";
 import StoreCache from "~/system/contents/store/manage/storeCache";
-import ReducerCache from "~/system/contents/store/reducer/reducerCache";
-import { store } from "~/system/contents/store/store";
 import MusicTheory from "~/system/contents/util/musicTheory";
 
 const DataChord = (props: {
@@ -25,6 +23,7 @@ const DataChord = (props: {
         // if (eatTail != 0) {
         //     tips[tips.length - 1] = eatTail;
         // }
+        // console.log(`${props.cache.elementSeq}, tip:[${tips.length}]`);
         return tips;
     });
 
@@ -41,7 +40,6 @@ const DataChord = (props: {
     });
 
     const chordName = createMemo(() => {
-        console.log(props.cache)
         const compiledChord = props.cache.compiledChord;
         if (compiledChord == undefined) return '-';
         return MusicTheory.getKeyChordName(compiledChord.chord);

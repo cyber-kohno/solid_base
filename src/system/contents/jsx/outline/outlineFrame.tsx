@@ -1,5 +1,4 @@
 import { styled } from "solid-styled-components";
-import { store } from "../../store/store";
 import Layout from "../../const/layout";
 import SC from "~/system/common/styled";
 import ElementList from "./elementList";
@@ -15,13 +14,11 @@ const OutlineFrame = () => {
 
 export default OutlineFrame;
 
-const thema = store.thema;
-
 const _Wrap = styled('div')`
     ${SC.rect}
     width: 100%;
     height: 100%;
-    background-color: ${thema.accent};
+    background-color: #a00;
 `;
 
 const layout = Layout.outline;

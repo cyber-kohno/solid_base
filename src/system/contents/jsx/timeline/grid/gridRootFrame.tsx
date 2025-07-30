@@ -2,13 +2,14 @@ import { For } from "solid-js";
 import { styled } from "solid-styled-components";
 import SC from "~/system/common/styled";
 import Layout from "~/system/contents/const/layout";
-import { store } from "~/system/contents/store/store";
+import { useGlobalStore } from "~/system/contents/store/store";
 import BaseBlock from "./baseBlock";
 
 const GridRootFrame = () => {
+    const {snapshot} = useGlobalStore();
 
     return (<_Wrap>
-        <For each={store.cache.baseCaches}>
+        <For each={snapshot.cache.baseCaches}>
             {(base, i) => <BaseBlock baseBlock={base} index={i()}/>}
         </For>
     </_Wrap>);

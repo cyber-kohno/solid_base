@@ -1,36 +1,39 @@
-import ReducerTerminal from "../store/reducer/reducerTerminal";
-import ReducerOutline from "../store/reducer/reducerOutline";
-import ReducerRoot from "../store/reducer/reducerRoot";
-import { setStore } from "../store/store";
+import useReducerTerminal from "../store/reducer/reducerTerminal";
+import { StoreProps } from "../store/store";
 
-namespace InputTerminal {
+const useInputTerminal = () => {
 
-    export const control = (eventKey: string) => {
+    const reducerTerminal = useReducerTerminal();
+
+    const control = (eventKey: string) => {
 
         switch (eventKey) {
             case 'Escape': {
-                ReducerTerminal.close();
+                reducerTerminal.close();
             } break;
             case 'Enter': {
-                ReducerTerminal.registOrder();
+                reducerTerminal.registOrder();
             } break;
             case 'Backspace': {
-                ReducerTerminal.removeOrder();
+                reducerTerminal.removeOrder();
             } break;
             case 'ArrowLeft': {
-                ReducerTerminal.moveFocus(-1);
+                reducerTerminal.moveFocus(-1);
             } break;
             case 'ArrowRight': {
-                ReducerTerminal.moveFocus(1);
+                reducerTerminal.moveFocus(1);
             } break;
             default: {
                 // 単一文字のキーのみ処理する
                 if (eventKey.length === 1) {
-                    ReducerTerminal.insertOrder(eventKey);
+                    reducerTerminal.insertOrder(eventKey);
                 }
             } break;
         }
     }
     
+    return {
+        control
+    }
 }
-export default InputTerminal;
+export default useInputTerminal;

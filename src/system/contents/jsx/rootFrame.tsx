@@ -6,15 +6,19 @@ import SC from "~/system/common/styled";
 import TimelineFrame from "./timeline/timelineFrame";
 import TerminalFrame from "./terminal/terminalFrame";
 import { createEffect, Show } from "solid-js";
-import { store } from "../store/store";
-import ReducerTerminal from "../store/reducer/reducerTerminal";
-import ReducerCache from "../store/reducer/reducerCache";
+import useReducerTerminal from "../store/reducer/reducerTerminal";
+import useReducerCache from "../store/reducer/reducerCache";
+import { store, useGlobalStore } from "../store/store";
 
 const RootFrame = () => {
+    const {snapshot} = useGlobalStore();
 
-    createEffect(()=> {
-        if(store.cache.elementCaches.length === 0) {
-            ReducerCache.calculate();
+    const reducerCache = useReducerCache();
+    const reducerTerminal = useReducerTerminal();
+
+    createEffect(() => {
+        if (store.cache.elementCaches.length === 0) {
+            reducerCache.calculate();
         }
     });
     return <>
@@ -30,7 +34,7 @@ const RootFrame = () => {
             </_TimelineDiv>
         </_MainDiv>
 
-        <Show when={ReducerTerminal.isUse()}>{<TerminalFrame />}</Show>
+        <Show when={snapshot.terminal != undefined}>{<TerminalFrame />}</Show>
 
     </>;
 }

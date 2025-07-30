@@ -1,14 +1,15 @@
 import { JSX } from "solid-js/jsx-runtime";
-import ReducerTerminal from "../store/reducer/reducerTerminal";
+import useReducerTerminal from "../store/reducer/reducerTerminal";
 import FunctionRegister from "./functionRegister";
 import LogBuilder from "./logBuilder";
 
 namespace TerminalManager {
 
+
     export const registOrder = () => {
         const logs: (() => JSX.Element)[] = [];
 
-        const terminal = ReducerTerminal.getTerminal();
+        const terminal = useReducerTerminal.getTerminal();
         logs.push(LogBuilder.history(terminal.target, terminal.order));
 
         if (terminal.order !== '') {

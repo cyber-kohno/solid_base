@@ -1,4 +1,3 @@
-import { createStore } from "solid-js/store";
 import Thema from "~/system/common/design/thema";
 import StoreControl from "./manage/storeControl";
 import StoreData from "./data/storeData";
@@ -62,5 +61,6 @@ export const store: StoreProps = proxy({
 });
 
 export const useGlobalStore = () => {
-  return useSnapshot(store);
+    const snapshot = useSnapshot(store);
+    return {snapshot};
 }

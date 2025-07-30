@@ -1,11 +1,11 @@
 import MusicTheory from "../../util/musicTheory";
 import StoreOutline from "../data/storeOutline";
 import StoreCache from "../manage/storeCache";
-import { setStore, store, StoreProps } from "../store";
+import { store } from "../store";
 
-namespace ReducerCache {
+const useReducerCache = () => {
 
-    export const calculate = () => {
+    const calculate = () => {
         const elements = store.data.elements;
 
         const baseCaches: StoreCache.BaseCache[] = [];
@@ -161,19 +161,25 @@ namespace ReducerCache {
         baseBlock.viewPosWidth = viewPos - baseBlock.viewPosLeft;
         baseCaches.push(baseBlock);
 
-        // setStore('cache', 'baseCaches', baseCaches);
-        // setStore('cache', 'chordCaches', chordCaches);
-        // setStore('cache', 'elementCaches', elementCaches);
-
-        setStore('cache', {baseCaches, chordCaches, elementCaches});
+        store.cache.baseCaches = baseCaches;
+        store.cache.chordCaches = chordCaches;
+        store.cache.elementCaches = elementCaches;
+        // store.cache = {
+        //     baseCaches, chordCaches, elementCaches
+        // }
     };
 
-    export const getChordInfoFromElementSeq = (elementSeq: number) => {
+    const getChordInfoFromElementSeq = (elementSeq: number) => {
         const cache = store.cache;
         const chordSeq = cache.elementCaches[elementSeq].chordSeq;
         if (chordSeq === -1) throw new Error(`elementSeq[${elementSeq}]のchordSeqが存在しない。（コードでない要素でgetChordInfoFromElementSeqを呼び出した。）`);
         return cache.chordCaches[chordSeq];
     }
+
+    return {
+        calculate,
+        getChordInfoFromElementSeq
+    };
 }
 
-export default ReducerCache;
+export default useReducerCache;

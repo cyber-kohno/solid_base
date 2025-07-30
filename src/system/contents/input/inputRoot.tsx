@@ -1,15 +1,20 @@
-import ReducerTerminal from "../store/reducer/reducerTerminal";
-import ReducerOutline from "../store/reducer/reducerOutline";
-import ReducerRoot from "../store/reducer/reducerRoot";
-import { store } from "../store/store";
-import InputTerminal from "./inputTerminal";
-import InputMelody from "./inputMelody";
-import InputOutline from "./inputOutline";
+import useReducerTerminal from "../store/reducer/reducerTerminal";
+import useReducerRoot from "../store/reducer/reducerRoot";
+import { store, StoreProps, useGlobalStore } from "../store/store";
+import useInputTerminal from "./inputTerminal";
+import useInputMelody from "./inputMelody";
+import useInputOutline from "./inputOutline";
 
-namespace InputRoot {
+const useInputRoot = () => {
+    const reducerRoot = useReducerRoot();
+    const reducerTerminal = useReducerTerminal();
+
+    const inputOutline = useInputOutline();
+    const inputMelody = useInputMelody();
+    const inputTerminal = useInputTerminal();
 
     const controlKeyHold = (eventKey: string, isDown: boolean) => {
-        const set = ReducerRoot.setInputHold;
+        const set = reducerRoot.setInputHold;
         switch (eventKey) {
             case "e": { set('holdE', isDown) } break;
             case "d": { set('holdD', isDown) } break;
@@ -22,11 +27,12 @@ namespace InputRoot {
         }
     }
 
-    export const holdControl = (callbacks: StoreInput.Callbacks) => {
+    const holdControl = (callbacks: StoreInput.Callbacks) => {
+
         Object.keys(callbacks).some(key => {
             const holdKey = key as keyof typeof store.input; // キーをタイプアサーションして型を指定
             const callback = callbacks[holdKey];
-            if(store.input[holdKey] && callback != undefined) {
+            if (store.input[holdKey] && callback != undefined) {
                 callback();
                 // 1つでも処理したらループを抜ける。
                 return 1;
@@ -34,52 +40,51 @@ namespace InputRoot {
         });
     }
 
-    export const onKeyDown = (e: KeyboardEvent) => {
+    const onKeyDown = (e: KeyboardEvent) => {
         const eventKey = e.key;
-        // console.log(eventKey);
 
         const mode = store.control.mode;
 
-        if (!ReducerRoot.hasHold()) {
-            if (ReducerTerminal.isUse()) {
-                InputTerminal.control(eventKey);
+        if (!reducerRoot.hasHold()) {
+            if (reducerTerminal.isUse()) {
+                inputTerminal.control(eventKey);
                 return;
             }
 
             switch (eventKey) {
                 case 'r': {
-                    ReducerRoot.switchMode();
+                    reducerRoot.switchMode();
                 } break;
                 case 't': {
-                    ReducerTerminal.open();
+                    reducerTerminal.open();
                 } break;
             }
 
             switch (mode) {
                 case 'harmonize': {
-                    InputOutline.control(eventKey);
+                    inputOutline.control(eventKey);
                 } break;
                 case 'melody': {
-                    InputMelody.control(eventKey);
+                    inputMelody.control(eventKey);
                 } break;
             }
 
             controlKeyHold(e.key, true);
         } else {
             holdControl(getHoldCallbacks(eventKey));
-            
+
             switch (mode) {
                 case 'harmonize': {
-                    holdControl(InputOutline.getHoldCallbacks(eventKey));
+                    holdControl(inputOutline.getHoldCallbacks(eventKey));
                 } break;
                 case 'melody': {
-                    holdControl(InputMelody.getHoldCallbacks(eventKey));
+                    holdControl(inputMelody.getHoldCallbacks(eventKey));
                 } break;
             }
         }
     }
 
-    export const onKeyUp = (e: KeyboardEvent) => {
+    const onKeyUp = (e: KeyboardEvent) => {
         controlKeyHold(e.key, false);
     }
 
@@ -93,7 +98,7 @@ namespace InputRoot {
 
         callbacks.holdE = () => {
 
-            switch(eventKey) {
+            switch (eventKey) {
                 case 'ArrowUp': {
                     console.log('E押しながら上');
                 } break;
@@ -101,5 +106,10 @@ namespace InputRoot {
         }
         return callbacks;
     }
+
+    return {
+        onKeyDown,
+        onKeyUp
+    }
 }
-export default InputRoot;
+export default useInputRoot;

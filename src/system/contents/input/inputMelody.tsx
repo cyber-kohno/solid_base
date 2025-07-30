@@ -1,16 +1,17 @@
 import ReducerOutline from "../store/reducer/reducerOutline";
-import ReducerRoot from "../store/reducer/reducerRoot";
+import useReducerRoot from "../store/reducer/reducerRoot";
+import { StoreProps } from "../store/store";
 
-namespace InputMelody {
+const useInputMelody = ()=> {
 
-    export const control = (eventKey: string) => {
+    const control = (eventKey: string) => {
 
         switch (eventKey) {
         }
     }
 
     
-    export const getHoldCallbacks = (eventKey: string): StoreInput.Callbacks => {
+    const getHoldCallbacks = (eventKey: string): StoreInput.Callbacks => {
         const callbacks: StoreInput.Callbacks = {};
 
         // callbacks.holdE = () => {
@@ -23,5 +24,10 @@ namespace InputMelody {
         // }
         return callbacks;
     }
+
+    return {
+        control,
+        getHoldCallbacks
+    };
 }
-export default InputMelody;
+export default useInputMelody;
