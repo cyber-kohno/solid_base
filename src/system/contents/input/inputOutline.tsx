@@ -18,7 +18,7 @@ namespace InputOutline {
                     type: 'chord',
                     data
                 });
-                ReducerCache.compileElements();
+                ReducerCache.calculate();
             } break;
             case 's': {
                 const data: StoreOutline.DataSection = {
@@ -28,11 +28,11 @@ namespace InputOutline {
                     type: 'section',
                     data
                 });
-                ReducerCache.compileElements();
+                ReducerCache.calculate();
             } break;
             case 'Delete': {
                 ReducerOutline.removeCurElement();
-                ReducerCache.compileElements();
+                ReducerCache.calculate();
             }break;
 
             case 'ArrowUp': {
@@ -56,7 +56,7 @@ namespace InputOutline {
                     const diatonic = MusicTheory.getDiatonicDegreeChord('major', scaleIndex);
                     chordData.degree = diatonic;
                     ReducerOutline.setChordData(chordData);
-                    ReducerCache.compileElements();
+                    ReducerCache.calculate();
                 }
             } break;
         }
@@ -77,7 +77,7 @@ namespace InputOutline {
                         const temp = chordData.beat + dir;
                         if (temp >= 1 && temp <= 4) chordData.beat = temp;
                         ReducerOutline.setChordData(chordData);
-                        ReducerCache.compileElements();
+                        ReducerCache.calculate();
                     }
                     switch (eventKey) {
                         case 'ArrowLeft': modBeat(-1); break;

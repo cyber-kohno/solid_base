@@ -5,11 +5,18 @@ import Layout from "../const/layout";
 import SC from "~/system/common/styled";
 import TimelineFrame from "./timeline/timelineFrame";
 import TerminalFrame from "./terminal/terminalFrame";
-import { Show } from "solid-js";
+import { createEffect, Show } from "solid-js";
 import { store } from "../store/store";
 import ReducerTerminal from "../store/reducer/reducerTerminal";
+import ReducerCache from "../store/reducer/reducerCache";
 
 const RootFrame = () => {
+
+    createEffect(()=> {
+        if(store.cache.elementCaches.length === 0) {
+            ReducerCache.calculate();
+        }
+    });
     return <>
         <_HeaderDiv>
             <RootHeader />

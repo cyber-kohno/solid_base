@@ -9,7 +9,8 @@ import ChordBlock from "./chordBlock";
 
 type PitchType = 'tonic' | 'other' | 'scale';
 const BaseBlock = (props: {
-    baseBlock: StoreCache.BaseBlock;
+    baseBlock: StoreCache.BaseCache;
+    index: number;
 }) => {
 
     const baseBlock = createMemo(() => props.baseBlock);
@@ -60,6 +61,8 @@ const BaseBlock = (props: {
         return list;
     });
 
+    const chordCaches = createMemo(() => store.cache.chordCaches.filter(c => c.baseSeq === props.index));
+
     return (
         <_Wrap left={baseBlock().viewPosLeft} width={baseBlock().viewPosWidth}>
 
@@ -72,8 +75,8 @@ const BaseBlock = (props: {
                 {pitch => <_Pitch top={pitch.top} type={pitch.type} />}
             </For>
 
-            <For each={baseBlock().chordBlocks}>
-                {chordBlock => <ChordBlock chordBlock={chordBlock}/>}
+            <For each={chordCaches()}>
+                {chordBlock => <ChordBlock cache={chordBlock} />}
             </For>
         </_Wrap>
     );

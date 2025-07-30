@@ -4,8 +4,8 @@ import Layout from "../../const/layout";
 import PitchListFrame from "./pitch/pitchListFrame";
 import GridRootFrame from "./grid/gridRootFrame";
 import ChordListFrame from "./header/chordListFrame";
-import BeatMeasureFrame from "./header/BeatMeasureFrame";
 import ProgressInfoFrame from "./header/progressInfoFrame";
+import BeatMeasureFrame from "./header/beatMeasureFrame";
 
 const TimelineFrame = () => {
 
@@ -37,6 +37,7 @@ const _HeaderDiv = styled.div`
     /* background-color: #c416c1; */
     width: 100%;
     height: ${Layout.timeline.HEADER_HEIGHT.toString()}px;
+    overflow: hidden;
 `;
 const _Blank = styled.div`
     ${SC.rect}

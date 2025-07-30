@@ -4,18 +4,18 @@ import StoreCache from "~/system/contents/store/manage/storeCache";
 import { store } from "~/system/contents/store/store";
 
 const ChordBlock = (props: {
-    chordBlock: StoreCache.ChordBlock;
+    cache: StoreCache.ChordCache;
 }) => {
 
     return <>{() => {
-        const chordBlock = props.chordBlock;
+        const cache = props.cache;
         const focus = store.control.outline.focus;
         return (
 
             <_Wrap
-                left={chordBlock.viewPosLeft}
-                width={chordBlock.viewPosWidth}
-                isFocus={focus === chordBlock.elementSeq}
+                left={cache.viewPosLeft}
+                width={cache.viewPosWidth}
+                isFocus={focus === cache.elementSeq}
             >
             </_Wrap>
         );

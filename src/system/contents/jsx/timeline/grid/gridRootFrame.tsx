@@ -8,13 +8,12 @@ import BaseBlock from "./baseBlock";
 const GridRootFrame = () => {
 
     return (<_Wrap>
-        <For each={store.cache.baseBlocks}>
-            {baseBlock => <BaseBlock baseBlock={baseBlock} />}
+        <For each={store.cache.baseCaches}>
+            {(base, i) => <BaseBlock baseBlock={base} index={i()}/>}
         </For>
     </_Wrap>);
 };
 export default GridRootFrame;
-
 
 const _Wrap = styled.div`
     ${SC.rect}

@@ -5,16 +5,16 @@ import { setStore, store, StoreProps } from "../store";
 
 namespace ReducerCache {
 
-    export const compileElements = () => {
+    export const calculate = () => {
         const elements = store.data.elements;
 
-        const baseList: StoreCache.BaseBlock[] = [];
-        const elementIndexes: StoreCache.ElementIndex[] = [];
-        const chordIndexes: StoreCache.ChordInfo[] = [];
+        const baseCaches: StoreCache.BaseCache[] = [];
+        const elementCaches: StoreCache.ElementCache[] = [];
+        const chordCaches: StoreCache.ChordCache[] = [];
 
         const initialScoreBase: StoreOutline.DataInit = elements[0].data;
 
-        let baseBlock: StoreCache.BaseBlock = {
+        let baseBlock: StoreCache.BaseCache = {
             startTime: 0,
             sustainTime: 0,
             startBeat: 0,
@@ -23,7 +23,6 @@ namespace ReducerCache {
             lengthBeatNote: 0,
             viewPosLeft: 0,
             viewPosWidth: 0,
-            chordBlocks: [],
             scoreBase: JSON.parse(JSON.stringify(initialScoreBase))
         }
 
@@ -41,7 +40,9 @@ namespace ReducerCache {
 
         elements.forEach((el, i) => {
             let beatSize = 0;
-            const elementIndex: StoreCache.ElementIndex = {
+            const elementIndex: StoreCache.ElementCache = {
+                // データ要素をディープコピー
+                ...JSON.parse(JSON.stringify(el)),
                 chordSeq: -1
             }
 
@@ -122,27 +123,27 @@ namespace ReducerCache {
 
                     const sustainTime = (60000 / baseBlock.scoreBase.tempo) * (data.beat + (-prevEat + data.eat) / 4);
 
-                    const chordBlock: StoreCache.ChordBlock = {
+                    const beat: StoreCache.BeatCache = {
+                        num: data.beat,
+                        eatHead: prevEat,
+                        eatTail: data.eat,
+                    }
+                    const chordCache: StoreCache.ChordCache = {
                         elementSeq: i,
+                        baseSeq: baseCaches.length,
+                        beat,
+                        compiledChord,
                         startBeat,
                         lengthBeat: data.beat,
                         startBeatNote,
                         lengthBeatNote: data.beat * beatRate,
-                        chordSeq: lastChordSeq,
                         viewPosLeft,
                         viewPosWidth,
                         sustainTime,
                         startTime: elapsedTime
                     };
 
-                    baseBlock.chordBlocks.push(chordBlock);
-                    const chordInfo: StoreCache.ChordInfo = {
-                        beat: data.beat,
-                        eatHead: prevEat,
-                        eatTail: data.eat,
-                        compiledChord
-                    }
-                    chordIndexes.push(chordInfo);
+                    chordCaches.push(chordCache);
                     elementIndex.chordSeq = lastChordSeq;
 
                     // 経過時間の加算
@@ -153,23 +154,25 @@ namespace ReducerCache {
                     baseBlock.lengthBeatNote += data.beat * beatRate;
                 } break;
             }
-            elementIndexes.push(elementIndex);
+            elementCaches.push(elementIndex);
         });
 
         // 後処理
         baseBlock.viewPosWidth = viewPos - baseBlock.viewPosLeft;
-        baseList.push(baseBlock);
+        baseCaches.push(baseBlock);
 
-        setStore('cache', 'baseBlocks', baseList);
-        setStore('cache', 'chordIndexes', chordIndexes);
-        setStore('cache', 'elementIndexes', elementIndexes);
+        // setStore('cache', 'baseCaches', baseCaches);
+        // setStore('cache', 'chordCaches', chordCaches);
+        // setStore('cache', 'elementCaches', elementCaches);
+
+        setStore('cache', {baseCaches, chordCaches, elementCaches});
     };
 
     export const getChordInfoFromElementSeq = (elementSeq: number) => {
         const cache = store.cache;
-        const chordSeq = cache.elementIndexes[elementSeq].chordSeq;
-        if(chordSeq === -1) throw new Error(`elementSeq[${elementSeq}]のchordSeqが存在しない。（コードでない要素でgetChordInfoFromElementSeqを呼び出した。）`);
-        return cache.chordIndexes[chordSeq];
+        const chordSeq = cache.elementCaches[elementSeq].chordSeq;
+        if (chordSeq === -1) throw new Error(`elementSeq[${elementSeq}]のchordSeqが存在しない。（コードでない要素でgetChordInfoFromElementSeqを呼び出した。）`);
+        return cache.chordCaches[chordSeq];
     }
 }
 

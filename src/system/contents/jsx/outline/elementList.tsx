@@ -7,12 +7,14 @@ import Layout from "../../const/layout";
 
 const ElementList = () => {
 
-    const elements = createMemo(() => store.cache.elementIndexes);
+    const elements = createMemo(() => {
+        return store.cache.elementCaches;
+    });
     return (<_Wrap>
 
         <For each={elements()} >
             {(element, index) => {
-                return <Element element={store.data.elements[index()]} index={index()} />
+                return <Element element={element} index={index()} />
             }}
         </For>
     </_Wrap>);

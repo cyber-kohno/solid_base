@@ -10,9 +10,10 @@ import DataModulate from "./data/dataModulate";
 import { createMemo } from "solid-js";
 import FocusCover from "~/system/common/item/focusCover";
 import { store } from "~/system/contents/store/store";
+import StoreCache from "~/system/contents/store/manage/storeCache";
 
 const Element = (props: {
-    element: StoreOutline.Element;
+    element: StoreCache.ElementCache;
     index: number;
 }) => {
 
@@ -23,7 +24,11 @@ const Element = (props: {
         switch (type) {
             case 'init': return <DataInit data={data}/>;
             case 'section': return <DataSection data={data}/>;
-            case 'chord': return <DataChord  data={data} index={props.index}/>;
+            case 'chord': {
+                if(element.chordSeq == -1) throw new Error('element.chordSeqが-1であってはならない。');
+                const cache = store.cache.chordCaches[element.chordSeq];
+                return <DataChord  data={data} cache={cache}/>;
+            }
             case 'modulate': return <DataModulate />;
         }
         throw new Error(`type:[${type}]のcaseが未定義。`);

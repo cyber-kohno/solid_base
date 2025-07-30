@@ -5,6 +5,7 @@ import StoreData from "./data/storeData";
 import StoreOutline from "./data/storeOutline";
 import StoreTerminal from "./manage/storeTerminal";
 import StoreCache from "./manage/storeCache";
+import { proxy, useSnapshot } from "solid-valtio";
 
 export type StoreProps = {
     control: StoreControl.Props;
@@ -21,8 +22,7 @@ export type StoreProps = {
     }
 };
 
-
-export const [store, setStore] = createStore<StoreProps>({
+export const store: StoreProps = proxy({
     thema: {
         main: "#599",
         accent: "#999",
@@ -51,12 +51,16 @@ export const [store, setStore] = createStore<StoreProps>({
     },
 
     cache: {
-        baseBlocks: [],
-        chordIndexes: [],
-        elementIndexes: []
+        baseCaches: [],
+        chordCaches: [],
+        elementCaches: []
     },
 
     env: {
         beatWidth: 100
     }
 });
+
+export const useGlobalStore = () => {
+  return useSnapshot(store);
+}
