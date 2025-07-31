@@ -18,6 +18,10 @@ export type StoreProps = {
 
     env: {
         beatWidth: number;
+    },
+
+    ref: {
+        grid?: HTMLDivElement;
     }
 };
 
@@ -57,7 +61,9 @@ export const store: StoreProps = proxy({
 
     env: {
         beatWidth: 100
-    }
+    },
+
+    ref: {}
 });
 
 export const useGlobalStore = () => {

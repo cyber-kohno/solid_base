@@ -41,7 +41,7 @@ const TerminalFrame = () => {
 export default TerminalFrame;
 
 const _Div = styled.div`
-  ${SC.absolute({})}
+  ${SC.absolute({zIndex: 4})}
   width: 700px;
   height: 700px;
   background-color: #003650;

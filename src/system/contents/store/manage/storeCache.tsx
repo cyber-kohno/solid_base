@@ -32,6 +32,10 @@ namespace StoreCache {
 
         beat: BeatCache;
         compiledChord?: CompiledChord;
+
+        sectionStart?: string;
+        modulate?: ModulateCahce;
+        tempo?: TempoCahce;
     }
 
     export interface ModulateCahce {
@@ -56,6 +60,7 @@ namespace StoreCache {
 
     export interface ElementCache extends StoreOutline.Element {
         chordSeq: number;
+        lastChordSeq: number;
     }
 }
 export default StoreCache;

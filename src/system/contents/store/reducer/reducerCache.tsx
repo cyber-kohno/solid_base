@@ -30,7 +30,6 @@ const useReducerCache = () => {
         let startBeatNote = 0;
         let elapsedTime = 0;
         let lastSectionName = '';
-        let sectionStart: string | undefined = undefined;
         let prevEat = 0;
 
         let prevStartBeat = 0;
@@ -38,12 +37,17 @@ const useReducerCache = () => {
 
         let viewPos = 0;
 
+        let sectionStart: string | undefined = undefined;
+        let lastModulate: StoreCache.ModulateCahce | undefined = undefined;
+        let lastTempo: StoreCache.TempoCahce | undefined = undefined;
+
         elements.forEach((el, i) => {
             let beatSize = 0;
             const elementIndex: StoreCache.ElementCache = {
                 // データ要素をディープコピー
                 ...JSON.parse(JSON.stringify(el)),
-                chordSeq: -1
+                chordSeq: -1,
+                lastChordSeq
             }
 
             switch (el.type) {
@@ -56,6 +60,7 @@ const useReducerCache = () => {
                 case 'chord': {
 
                     lastChordSeq++;
+                    elementIndex.lastChordSeq = lastChordSeq;
 
                     const data = el.data as StoreOutline.DataChord;
 
@@ -140,8 +145,14 @@ const useReducerCache = () => {
                         viewPosLeft,
                         viewPosWidth,
                         sustainTime,
-                        startTime: elapsedTime
+                        startTime: elapsedTime,
+                        sectionStart,
+                        modulate: lastModulate,
+                        tempo: lastTempo
                     };
+                    sectionStart = undefined;
+                    lastModulate = undefined;
+                    lastTempo = undefined;
 
                     chordCaches.push(chordCache);
                     elementIndex.chordSeq = lastChordSeq;

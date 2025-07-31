@@ -5,22 +5,12 @@ import Layout from "../const/layout";
 import SC from "~/system/common/styled";
 import TimelineFrame from "./timeline/timelineFrame";
 import TerminalFrame from "./terminal/terminalFrame";
-import { createEffect, Show } from "solid-js";
-import useReducerTerminal from "../store/reducer/reducerTerminal";
-import useReducerCache from "../store/reducer/reducerCache";
-import { store, useGlobalStore } from "../store/store";
+import { Show } from "solid-js";
+import { useGlobalStore } from "../store/store";
 
 const RootFrame = () => {
-    const {snapshot} = useGlobalStore();
+    const { snapshot } = useGlobalStore();
 
-    const reducerCache = useReducerCache();
-    const reducerTerminal = useReducerTerminal();
-
-    createEffect(() => {
-        if (store.cache.elementCaches.length === 0) {
-            reducerCache.calculate();
-        }
-    });
     return <>
         <_HeaderDiv>
             <RootHeader />
