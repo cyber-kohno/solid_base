@@ -5,6 +5,7 @@ import StoreOutline from "./data/storeOutline";
 import StoreTerminal from "./manage/storeTerminal";
 import StoreCache from "./manage/storeCache";
 import { proxy, useSnapshot } from "solid-valtio";
+import StoreRef from "./manage/storeRef";
 
 export type StoreProps = {
     control: StoreControl.Props;
@@ -20,9 +21,7 @@ export type StoreProps = {
         beatWidth: number;
     },
 
-    ref: {
-        grid?: HTMLDivElement;
-    }
+    ref: StoreRef.Props;
 };
 
 export const store: StoreProps = proxy({
@@ -68,5 +67,5 @@ export const store: StoreProps = proxy({
 
 export const useGlobalStore = () => {
     const snapshot = useSnapshot(store);
-    return {snapshot};
+    return { snapshot };
 }

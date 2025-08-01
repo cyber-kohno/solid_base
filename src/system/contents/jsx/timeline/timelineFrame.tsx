@@ -6,6 +6,7 @@ import GridRootFrame from "./grid/gridRootFrame";
 import ChordListFrame from "./header/chordListFrame";
 import ProgressInfoFrame from "./header/progressInfoFrame";
 import BeatMeasureFrame from "./header/beatMeasureFrame";
+import { store } from "../../store/store";
 
 const TimelineFrame = () => {
 
@@ -13,7 +14,7 @@ const TimelineFrame = () => {
         <_Wrap margin={6}>
             <_HeaderDiv>
                 <_Blank />
-                <_Active>
+                <_Active ref={(ref) => store.ref.grid = () => ref}>
                     <BeatMeasureFrame />
                     <ChordListFrame />
                     <ProgressInfoFrame />

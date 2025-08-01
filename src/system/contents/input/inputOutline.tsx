@@ -43,6 +43,11 @@ const useInputOutline = () => {
             } break;
             case 'ArrowDown': {
                 reducerOutline.moveFocus(1);
+
+                if(store.ref.grid) {
+                    const ref = store.ref.grid();
+                    ref.scrollBy({left: ref.scrollLeft + 33, behavior: "smooth"});
+                }
             } break;
             case '1':
             case '2':

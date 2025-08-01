@@ -1,4 +1,4 @@
-import { createEffect, For, onMount } from "solid-js";
+import { createEffect, createSignal, For, onMount } from "solid-js";
 import { styled } from "solid-styled-components";
 import SC from "~/system/common/styled";
 import Layout from "~/system/contents/const/layout";
@@ -9,9 +9,7 @@ import GridFocus from "./gridFocus";
 const GridRootFrame = () => {
     const { snapshot } = useGlobalStore();
 
-    return (<_Wrap ref={ref => {
-        store.ref.grid = ref;
-    }}>
+    return (<_Wrap ref={(ref) => store.ref.grid = () => ref}>
         <For each={snapshot.cache.baseCaches}>
             {(base, i) => <BaseBlock baseBlock={base} index={i()} />}
         </For>

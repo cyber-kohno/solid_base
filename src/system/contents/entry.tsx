@@ -27,16 +27,6 @@ export const Entry = () => {
                 tabIndex={-1}
                 onKeyDown={inputRoot.onKeyDown}
                 onKeyUp={inputRoot.onKeyUp}
-
-                onClick={() => {
-
-                    if (snapshot.ref.grid != undefined) {
-                        const ref = snapshot.ref.grid;
-                        console.log(ref);
-                        const rect = ref.getBoundingClientRect();
-                        ref.scrollBy({ left: rect.width, behavior: "smooth" });
-                    }
-                }}
             >
                 <RootFrame />
             </_Wrap>
