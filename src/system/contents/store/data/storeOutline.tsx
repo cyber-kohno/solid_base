@@ -34,6 +34,16 @@ namespace StoreOutline {
     export type ModulateMedhod = typeof ModulateMedhods[number];
 
     export type TempoRelation = 'diff' | 'rate' | 'abs';
+    export type DataTempo = {
+        method: TempoMedhod;
+        val: number;
+    };
+    export const TempoMedhods = ['rate', 'addition'] as const;
+    export type TempoMedhod = typeof TempoMedhods[number];
+
+    export type DataTS = {
+        newTS: MusicTheory.TimeSignature;
+    };
 
     export type Element = {
         type: ElementType;

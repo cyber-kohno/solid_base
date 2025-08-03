@@ -3,21 +3,23 @@ import Element from "./element/element";
 import { styled } from "solid-styled-components";
 import SC from "~/system/common/styled";
 import Layout from "../../const/layout";
-import { useGlobalStore } from "../../store/store";
+import { store, getSnapshot } from "../../store/store";
+import MarginBlock from "../common/marginBlock";
 
 const ElementList = () => {
-    const {snapshot} = useGlobalStore();
+    const { snapshot } = getSnapshot();
 
     const elements = createMemo(() => {
         return snapshot.cache.elementCaches;
     });
-    return (<_Wrap>
+    return (<_Wrap ref={ref => store.ref.outline = () => ref}>
 
         <For each={elements()} >
             {(element, index) => {
                 return <Element element={element} index={index()} />
             }}
         </For>
+        <MarginBlock.Outline />
     </_Wrap>);
 }
 export default ElementList;

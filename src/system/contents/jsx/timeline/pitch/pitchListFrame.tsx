@@ -2,6 +2,7 @@ import { createMemo, For } from "solid-js";
 import { styled } from "solid-styled-components";
 import SC from "~/system/common/styled";
 import Layout from "~/system/contents/const/layout";
+import { store } from "~/system/contents/store/store";
 import MusicTheory from "~/system/contents/util/musicTheory";
 
 const PitchListFrame = () => {
@@ -10,10 +11,10 @@ const PitchListFrame = () => {
         return [...Array(92).keys()]
             .map(v => MusicTheory.getPitchKey(v)
                 .reverse().join(""))
-                // 音程は低い順に下から並べる
-                .reverse();
+            // 音程は低い順に下から並べる
+            .reverse();
     });
-    return (<_Wrap>
+    return (<_Wrap ref={ref => store.ref.pitch = () => ref}>
         <For each={pitchNames()}>
             {pitch => <_Item>{pitch}</_Item>}
         </For>

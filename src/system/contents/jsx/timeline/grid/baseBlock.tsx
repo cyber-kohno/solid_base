@@ -3,7 +3,7 @@ import { styled } from "solid-styled-components";
 import SC from "~/system/common/styled";
 import Layout from "~/system/contents/const/layout";
 import StoreCache from "~/system/contents/store/manage/storeCache";
-import { useGlobalStore } from "~/system/contents/store/store";
+import { getSnapshot } from "~/system/contents/store/store";
 import MusicTheory from "~/system/contents/util/musicTheory";
 import ChordBlock from "./chordBlock";
 
@@ -12,7 +12,7 @@ const BaseBlock = (props: {
     baseBlock: StoreCache.BaseCache;
     index: number;
 }) => {
-    const {snapshot} = useGlobalStore();
+    const {snapshot} = getSnapshot();
 
     const baseBlock = createMemo(() => props.baseBlock);
 
@@ -62,7 +62,7 @@ const BaseBlock = (props: {
         return list;
     });
 
-    const chordCaches = createMemo(() => snapshot.cache.chordCaches.filter(c => c.baseSeq === props.index));
+    // const chordCaches = createMemo(() => snapshot.cache.chordCaches.filter(c => c.baseSeq === props.index));
 
     return (
         <_Wrap left={baseBlock().viewPosLeft} width={baseBlock().viewPosWidth}>
@@ -74,10 +74,6 @@ const BaseBlock = (props: {
             {/* 音程の補助ライン */}
             <For each={pitchItems()}>
                 {pitch => <_Pitch top={pitch.top} type={pitch.type} />}
-            </For>
-
-            <For each={chordCaches()}>
-                {chordBlock => <ChordBlock cache={chordBlock} />}
             </For>
         </_Wrap>
     );
@@ -93,10 +89,10 @@ const _Wrap = styled.div<{
     width: number;
 }>`
     display: inline-block;
-    position: relative;
+    position: absolute;
     z-index: 1;
 
-    background-color: #16c49687;
+    background-color: #16c496;
     top: 0;
     left: ${props => props.left}px;
     width: ${props => props.width}px;

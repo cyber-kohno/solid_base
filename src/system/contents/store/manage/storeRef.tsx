@@ -3,8 +3,10 @@ namespace StoreRef {
     export type Props = {
         grid?: () => HTMLDivElement;
         header?: () => HTMLDivElement;
-        pich?: () => HTMLDivElement;
+        pitch?: () => HTMLDivElement;
         outline?: () => HTMLDivElement;
+
+        elementRefs: { seq: number, get: () => HTMLDivElement }[];
     }
 };
 export default StoreRef;

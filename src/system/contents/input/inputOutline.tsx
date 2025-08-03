@@ -1,6 +1,7 @@
 import StoreOutline from "../store/data/storeOutline";
 import useReducerCache from "../store/reducer/reducerCache";
 import useReducerOutline from "../store/reducer/reducerOutline";
+import useReducerRef from "../store/reducer/reducerRef";
 import { store, StoreProps } from "../store/store";
 import MusicTheory from "../util/musicTheory";
 
@@ -8,6 +9,7 @@ const useInputOutline = () => {
 
     const reducerOutline = useReducerOutline();
     const reducerCache = useReducerCache();
+    const reducerRef = useReducerRef();
 
     const control = (eventKey: string) => {
 
@@ -33,6 +35,17 @@ const useInputOutline = () => {
                 });
                 reducerCache.calculate();
             } break;
+            case 'm': {
+                const data: StoreOutline.DataModulate = {
+                    method: 'domm',
+                    val: 1
+                };
+                reducerOutline.insertElement({
+                    type: 'modulate',
+                    data
+                });
+                reducerCache.calculate();
+            } break;
             case 'Delete': {
                 reducerOutline.removeCurElement();
                 reducerCache.calculate();
@@ -40,14 +53,14 @@ const useInputOutline = () => {
 
             case 'ArrowUp': {
                 reducerOutline.moveFocus(-1);
+                reducerRef.adjustGridScrollX();
+                reducerRef.adjustOutlineScroll();
             } break;
             case 'ArrowDown': {
                 reducerOutline.moveFocus(1);
+                reducerRef.adjustGridScrollX();
+                reducerRef.adjustOutlineScroll();
 
-                if(store.ref.grid) {
-                    const ref = store.ref.grid();
-                    ref.scrollBy({left: ref.scrollLeft + 33, behavior: "smooth"});
-                }
             } break;
             case '1':
             case '2':
@@ -76,6 +89,10 @@ const useInputOutline = () => {
 
         const elementType = reducerOutline.getCurrentElement().type;
 
+        const elements = store.data.elements;
+        const focus = store.control.outline.focus;
+        const element = elements[focus];
+
         callbacks.holdF = () => {
 
             switch (elementType) {
@@ -87,12 +104,36 @@ const useInputOutline = () => {
                         if (temp >= 1 && temp <= 4) chordData.beat = temp;
                         reducerOutline.setChordData(chordData);
                         reducerCache.calculate();
+                        reducerRef.adjustGridScrollX();
                     }
                     switch (eventKey) {
                         case 'ArrowLeft': modBeat(-1); break;
                         case 'ArrowRight': modBeat(1); break;
                     }
                 } break;
+            }
+        }
+
+        callbacks.holdG = () => {
+            const data = element.data as StoreOutline.DataChord;
+            /**
+             * コードブロックのケツのシンコペーションを増減する
+             * @param dir 
+             */
+            const modEat = (dir: -1 | 1) => {
+                let temp = data.eat;
+                temp += dir;
+
+                if (temp >= -2 && temp <= 2) {
+                    data.eat = temp;
+                    reducerOutline.setChordData(data);
+                    reducerCache.calculate();
+                    reducerRef.adjustGridScrollX();
+                }
+            }
+            switch (eventKey) {
+                case 'ArrowLeft': modEat(-1); break;
+                case 'ArrowRight': modEat(1); break;
             }
         }
         return callbacks;

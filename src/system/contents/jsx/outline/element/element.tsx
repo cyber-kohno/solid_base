@@ -6,14 +6,14 @@ import DataChord from "./data/dataChord";
 import DataModulate from "./data/dataModulate";
 import { createMemo } from "solid-js";
 import FocusCover from "~/system/common/item/focusCover";
-import { useGlobalStore } from "~/system/contents/store/store";
+import { store, getSnapshot } from "~/system/contents/store/store";
 import StoreCache from "~/system/contents/store/manage/storeCache";
 
 const Element = (props: {
     element: StoreCache.ElementCache;
     index: number;
 }) => {
-    const { snapshot } = useGlobalStore();
+    const { snapshot } = getSnapshot();
 
     const dataJsx = createMemo((() => {
         const element = props.element;
@@ -27,14 +27,23 @@ const Element = (props: {
                 const cache = snapshot.cache.chordCaches[element.chordSeq];
                 return <DataChord data={data} cache={cache} />;
             }
-            case 'modulate': return <DataModulate />;
+            case 'modulate': return <DataModulate data={data} />;
         }
         throw new Error(`type:[${type}]のcaseが未定義。`);
     }));
 
     const isFocus = createMemo(() => snapshot.control.outline.focus === props.index);
 
-    return (<_Item>
+    const initRef = (ref: HTMLDivElement) => {
+        const elementRefs = store.ref.elementRefs;
+        let instance = elementRefs.find((r) => r.seq === props.index);
+        if (instance == undefined) {
+            instance = { seq: props.index, get: () => ref };
+            elementRefs.push(instance);
+        } else instance.get = () => ref;
+    }
+
+    return (<_Item ref={initRef}>
         {dataJsx()}
         <FocusCover dispCondition={isFocus()} bgColor="#ffec3d6c" />
     </_Item>);

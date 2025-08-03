@@ -1,6 +1,6 @@
 import useReducerTerminal from "../store/reducer/reducerTerminal";
 import useReducerRoot from "../store/reducer/reducerRoot";
-import { store, StoreProps, useGlobalStore } from "../store/store";
+import { store, StoreProps, getSnapshot } from "../store/store";
 import useInputTerminal from "./inputTerminal";
 import useInputMelody from "./inputMelody";
 import useInputOutline from "./inputOutline";

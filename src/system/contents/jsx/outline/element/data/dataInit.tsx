@@ -13,8 +13,7 @@ const DataInit = (props: {
         const list = MusicTheory.KEY12_SHARP_LIST;
         const keyScaleName = list[data.tonality.key12] + data.tonality.scale;
 
-        const ts = data.ts;
-        const tsName = `${ts.den}/${ts.num}`;
+        const tsName = MusicTheory.getTSName(data.ts);
         return { keyScaleName, tsName, tempo: data.tempo };
     });
 

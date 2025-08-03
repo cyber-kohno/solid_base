@@ -2,17 +2,17 @@ import { store, StoreProps } from "../store";
 
 const useReducerRoot = () => {
 
-     const switchMode = () => {
+    const switchMode = () => {
         const mode = store.control.mode;
-        store.control.mode= mode === 'harmonize' ? 'melody' : 'harmonize';
+        store.control.mode = mode === 'harmonize' ? 'melody' : 'harmonize';
     };
 
-     type InputKey = keyof StoreProps['input'];
-     const setInputHold = (key: InputKey, isDown: boolean) => {
+    type InputKey = keyof StoreProps['input'];
+    const setInputHold = (key: InputKey, isDown: boolean) => {
         store.input[key] = isDown;
     }
 
-     const hasHold = () => {
+    const hasHold = () => {
         return Object.values(store.input).find(flg => flg) != undefined;
     }
 

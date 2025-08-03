@@ -62,10 +62,12 @@ export const store: StoreProps = proxy({
         beatWidth: 100
     },
 
-    ref: {}
+    ref: {
+        elementRefs: []
+    }
 });
 
-export const useGlobalStore = () => {
+export const getSnapshot = () => {
     const snapshot = useSnapshot(store);
     return { snapshot };
 }

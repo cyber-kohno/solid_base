@@ -1,5 +1,5 @@
 import assert from "assert";
-import { store, StoreProps, useGlobalStore } from "../store";
+import { store, StoreProps, getSnapshot } from "../store";
 import TerminalManager from "../../terminal/terminalManager";
 
 const useReducerTerminal = () => {

@@ -3,12 +3,12 @@ import { keyframes, styled } from "solid-styled-components";
 import SC from "~/system/common/styled";
 import useReducerTerminal from "../../store/reducer/reducerTerminal";
 import { css } from "@emotion/react";
-import { useGlobalStore } from "../../store/store";
+import { getSnapshot } from "../../store/store";
 import useAccessorTerminal from "../../store/accessor/accessorTerminal";
 
 const TerminalFrame = () => {
 
-  const {snapshot} = useGlobalStore();
+  const {snapshot} = getSnapshot();
 
   const accessorTerminal = useAccessorTerminal(snapshot);
 

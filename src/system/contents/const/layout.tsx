@@ -15,7 +15,7 @@ namespace Layout {
 
     }
     export const outline = {
-        HEADER_HEIGHT: 100,
+        HEADER_HEIGHT: 90,
         FOOTER_HEIGHT: 20,
     }
 

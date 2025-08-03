@@ -2,17 +2,26 @@ import { createEffect, createSignal, For, onMount } from "solid-js";
 import { styled } from "solid-styled-components";
 import SC from "~/system/common/styled";
 import Layout from "~/system/contents/const/layout";
-import { store, useGlobalStore } from "~/system/contents/store/store";
+import { store, getSnapshot } from "~/system/contents/store/store";
 import BaseBlock from "./baseBlock";
 import GridFocus from "./gridFocus";
+import MarginBlock from "../../common/marginBlock";
+import ChordBlock from "./chordBlock";
 
 const GridRootFrame = () => {
-    const { snapshot } = useGlobalStore();
+    const { snapshot } = getSnapshot();
 
-    return (<_Wrap ref={(ref) => store.ref.grid = () => ref}>
+    return (<_Wrap ref={(ref) => {
+        // console.log('store.ref.grid = () => ref');
+        store.ref.grid = () => ref;
+    }}>
         <For each={snapshot.cache.baseCaches}>
             {(base, i) => <BaseBlock baseBlock={base} index={i()} />}
         </For>
+        <For each={snapshot.cache.chordCaches}>
+            {chordBlock => <ChordBlock cache={chordBlock} />}
+        </For>
+        <MarginBlock.Block />
         <GridFocus />
     </_Wrap>);
 };

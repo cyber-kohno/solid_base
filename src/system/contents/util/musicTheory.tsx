@@ -113,6 +113,8 @@ namespace MusicTheory {
         return `${keyName}${tonality.scale}`
     }
 
+    export const getTSName = (ts: TimeSignature) => `${ts.den}/${ts.num}`;
+
     export const isScaleStructPitch = (pitch: number, tonality: Tonality) => {
         const keyIndex = getKeyIndex(pitch, tonality.key12);
         const list = tonality.scale === 'major' ? MAJOR_SCALE_INTERVALS : MINOR_SCALE_INTERVALS;

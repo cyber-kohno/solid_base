@@ -2,11 +2,12 @@ import { styled } from "solid-styled-components";
 import Layout from "../../const/layout";
 import SC from "~/system/common/styled";
 import ElementList from "./elementList";
+import ElementHeaderInfo from "./elementHeaderInfo";
 
 const OutlineFrame = () => {
 
   return (<_Wrap>
-    <_HeaderDiv></_HeaderDiv>
+    <ElementHeaderInfo />
     <ElementList />
     <_FooterDiv></_FooterDiv>
   </_Wrap>);
@@ -23,13 +24,7 @@ const _Wrap = styled('div')`
 
 const layout = Layout.outline;
 
-const _HeaderDiv = styled('div')`
-    ${SC.rect}
-    width: 100%;
-    height: ${layout.HEADER_HEIGHT.toString()}px;
-    background-color: #f1a3a3;
-`;
-const _FooterDiv = styled('div')`
+const _FooterDiv = styled.div`
     ${SC.rect}
     width: 100%;
     height: ${layout.FOOTER_HEIGHT.toString()}px;

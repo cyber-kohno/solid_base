@@ -1,28 +1,36 @@
 import { createMemo, For } from "solid-js";
 import { styled } from "solid-styled-components";
 import SC from "~/system/common/styled";
+import useAccessorCache from "~/system/contents/store/accessor/accessorCache";
 import StoreOutline from "~/system/contents/store/data/storeOutline";
 import StoreCache from "~/system/contents/store/manage/storeCache";
+import { getSnapshot } from "~/system/contents/store/store";
 import MusicTheory from "~/system/contents/util/musicTheory";
+
+const TIP_BASE_WIDTH = 12;
 
 const DataChord = (props: {
     data: StoreOutline.DataChord;
     cache: StoreCache.ChordCache;
 }) => {
-    
+
+    const { snapshot } = getSnapshot();
+    const accessorCache = useAccessorCache(snapshot);
+
     const beatTips = createMemo((): number[] => {
-        // const eatHead = -chordInfo.prevEat;
-        // const eatTail = chordInfo.item.eat;
-        // const beat = chordInfo.item.beat;
+        const chordInfo = props.cache;
+        const eatHead = -chordInfo.beat.eatHead;
+        const eatTail = chordInfo.beat.eatTail;
+        const beat = chordInfo.beat.num;
 
-        const tips = Array.from({ length: props.data.beat }, () => 0);
+        const tips = Array.from({ length: beat }, () => 0);
 
-        // if (eatHead != 0) {
-        //     tips[0] = eatHead;
-        // }
-        // if (eatTail != 0) {
-        //     tips[tips.length - 1] = eatTail;
-        // }
+        if (eatHead != 0) {
+            tips[0] = eatHead;
+        }
+        if (eatTail != 0) {
+            tips[tips.length - 1] = eatTail;
+        }
         // console.log(`${props.cache.elementSeq}, tip:[${tips.length}]`);
         return tips;
     });
@@ -45,12 +53,14 @@ const DataChord = (props: {
         return MusicTheory.getKeyChordName(compiledChord.chord);
     });
 
+    // const chordSeq = createMemo(() => accessorCache.getCurElement().chordSeq);
+
     return (<_Wrap>
-        <_SeqDiv>{1}</_SeqDiv>
+        <_SeqDiv>{0}</_SeqDiv>
         <_TipDiv>
             <For each={beatTips()}>{tip => {
 
-                return <_BeatTip/>;
+                return <_BeatTip width={TIP_BASE_WIDTH + tip * 3} />;
             }}</For>
         </_TipDiv>
         <_DegreeDiv>{degreeName()}</_DegreeDiv>
@@ -86,18 +96,23 @@ const _TipDiv = styled.div`
     text-align: center;
 `;
 
-const _BeatTip = styled.div`
+const _BeatTip = styled.div<{
+    width: number;
+}>`
     display: inline-block;
     position: relative;
-    width: 12px;
+    width: ${props => props.width}px;
     height: calc(100% - 4px);
     margin: 2px 2px 0 2px;
-    background-color: #cec1cbbc;
+    background-color: ${props => (() => {
+        if (props.width === TIP_BASE_WIDTH) return '#cec1cbbc';
+        else if (props.width < TIP_BASE_WIDTH) return '#2d22ffbb';
+        if (props.width > TIP_BASE_WIDTH) return '#dc0030bb';
+    })()};
     border: 1px solid #0000005d;
     border-radius: 2px;
     box-sizing: border-box;
 `;
-
 
 const _DegreeDiv = styled.div`
     ${SC.rect}

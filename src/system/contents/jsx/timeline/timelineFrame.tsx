@@ -6,18 +6,24 @@ import GridRootFrame from "./grid/gridRootFrame";
 import ChordListFrame from "./header/chordListFrame";
 import ProgressInfoFrame from "./header/progressInfoFrame";
 import BeatMeasureFrame from "./header/beatMeasureFrame";
-import { store } from "../../store/store";
+import { store, getSnapshot } from "../../store/store";
+import { createMemo } from "solid-js";
 
 const TimelineFrame = () => {
+    const { snapshot } = getSnapshot();
 
+    const headerWidth = createMemo(() => snapshot.cache.chordCaches.reduce((total, cur) => total + cur.viewPosWidth, 0));
     return (
         <_Wrap margin={6}>
             <_HeaderDiv>
                 <_Blank />
-                <_Active ref={(ref) => store.ref.grid = () => ref}>
-                    <BeatMeasureFrame />
-                    <ChordListFrame />
-                    <ProgressInfoFrame />
+                <_Active ref={(ref) => {
+                    // console.log('store.ref.header = () => ref');
+                    store.ref.header = () => ref;
+                }}>
+                    <BeatMeasureFrame  headerWidth={headerWidth()}/>
+                    <ChordListFrame headerWidth={headerWidth()}/>
+                    <ProgressInfoFrame  headerWidth={headerWidth()}/>
                 </_Active>
             </_HeaderDiv>
             <_MainDiv>
@@ -49,6 +55,8 @@ const _Active = styled.div`
     ${SC.rect}
     width: calc(100% - ${Layout.timeline.PITCH_WIDTH.toString()}px);
     height: 100%;
+    overflow: hidden;
+    background-color: aliceblue;
 `;
 
 const _MainDiv = styled.div`

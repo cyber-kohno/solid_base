@@ -2,13 +2,13 @@ import { styled } from "solid-styled-components";
 import RootFrame from "./jsx/rootFrame";
 import SC from "../common/styled";
 import useInputRoot from "./input/inputRoot";
-import { store, useGlobalStore } from "./store/store";
+import { store, getSnapshot } from "./store/store";
 import { createEffect, createMemo, onMount, Show } from "solid-js";
 import useReducerCache from "./store/reducer/reducerCache";
 
 
 export const Entry = () => {
-    const { snapshot } = useGlobalStore();
+    const { snapshot } = getSnapshot();
     const inputRoot = useInputRoot();
 
     const reducerCache = useReducerCache();

@@ -2,10 +2,10 @@ import { styled } from "solid-styled-components";
 import SC from "~/system/common/styled";
 import ModeButton from "./modeButton";
 import { createMemo } from "solid-js";
-import { useGlobalStore } from "../../store/store";
+import { getSnapshot } from "../../store/store";
 
 const RootHeader = () => {
-  const {snapshot} = useGlobalStore();
+  const {snapshot} = getSnapshot();
 
   const mode = createMemo(() => snapshot.control.mode);
   return (

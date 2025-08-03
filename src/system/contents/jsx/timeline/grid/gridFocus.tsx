@@ -2,10 +2,10 @@ import { css } from "@emotion/react";
 import { createMemo } from "solid-js";
 import { styled } from "solid-styled-components";
 import SC from "~/system/common/styled";
-import { useGlobalStore } from "~/system/contents/store/store";
+import { getSnapshot } from "~/system/contents/store/store";
 
 const GridFocus = () => {
-    const { snapshot } = useGlobalStore();
+    const { snapshot } = getSnapshot();
 
     const values = createMemo(() => {
         const outline = snapshot.control.outline;

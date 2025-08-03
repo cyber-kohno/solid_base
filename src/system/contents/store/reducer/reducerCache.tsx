@@ -46,16 +46,18 @@ const useReducerCache = () => {
             const elementIndex: StoreCache.ElementCache = {
                 // データ要素をディープコピー
                 ...JSON.parse(JSON.stringify(el)),
+                baseSeq: baseCaches.length,
                 chordSeq: -1,
                 lastChordSeq
             }
+            
+            // let modulateCache: StoreCache.ModulateCahce | undefined = undefined;
+            // let tempoCache: StoreCache.TempoCahce | undefined = undefined;
 
             switch (el.type) {
                 case 'section': {
                     const data = el.data as StoreOutline.DataSection;
-                    if (lastSectionName !== data.name) {
-                        lastSectionName = sectionStart = data.name;
-                    }
+                    lastSectionName = sectionStart = data.name;
                 } break;
                 case 'chord': {
 
@@ -135,7 +137,6 @@ const useReducerCache = () => {
                     }
                     const chordCache: StoreCache.ChordCache = {
                         elementSeq: i,
-                        baseSeq: baseCaches.length,
                         beat,
                         compiledChord,
                         startBeat,
@@ -164,6 +165,94 @@ const useReducerCache = () => {
                     baseBlock.lengthBeat += data.beat;
                     baseBlock.lengthBeatNote += data.beat * beatRate;
                 } break;
+                case 'modulate':
+                case 'tempo': {
+
+                    baseBlock.viewPosWidth = viewPos - baseBlock.viewPosLeft;
+                    baseCaches.push(baseBlock);
+                    // console.log(baseList);
+
+                    // インスタンスを複製
+                    baseBlock = JSON.parse(JSON.stringify(baseBlock));
+
+                    baseBlock.viewPosLeft = viewPos;
+                    // console.log(viewPos);
+
+                    baseBlock.startTime = elapsedTime;
+                    // 経過時間をリセット
+                    baseBlock.sustainTime = 0;
+
+                    const divCnt = MusicTheory.getBarDivBeatCount(baseBlock.scoreBase.ts);
+                    // baseBlock.startBar += Math.ceil(baseBlock.lengthBeat / divCnt);
+
+                    baseBlock.startBeat = baseBlock.startBeat + baseBlock.lengthBeat;
+                    baseBlock.startBeatNote += baseBlock.lengthBeatNote;
+                    baseBlock.lengthBeat = 0;
+                    baseBlock.lengthBeatNote = 0;
+
+                    switch (el.type) {
+                        case 'modulate': {
+                            const data = el.data as StoreOutline.DataModulate;
+                            const tonality = baseBlock.scoreBase.tonality;
+                            const prevTonality: MusicTheory.Tonality = JSON.parse(JSON.stringify(tonality));
+
+                            const updateKey12 = (val: number) => {
+                                let nextKey12 = tonality.key12 + val;
+                                // 負数の場合、整数になるまでオクターブ上げる
+                                while (nextKey12 < 0) nextKey12 += 12;
+                                tonality.key12 = nextKey12 % 12;
+                            }
+                            /**スケールを逆転 */
+                            const invertScale = () => {
+                                tonality.scale = tonality.scale === 'major' ? 'minor' : 'major';
+                            }
+
+                            // 転調
+                            switch (data.method) {
+                                case 'domm': {
+                                    const val = data.val as number;
+                                    updateKey12(val * MusicTheory.DOMMINANT_KEY_COEFFICENT);
+                                } break;
+                                case 'key': {
+                                    const val = data.val as number;
+                                    updateKey12(val);
+                                } break;
+                                case 'parallel': {
+                                    invertScale();
+                                } break;
+                                case 'relative': {
+                                    let val = MusicTheory.DOMMINANT_KEY_COEFFICENT * 3;
+                                    if (tonality.scale === 'minor') val *= -1;
+                                    updateKey12(val);
+                                    invertScale();
+                                } break;
+                            }
+                            lastModulate = {
+                                prev: prevTonality,
+                                next: tonality
+                            };
+                        } break;
+                        case 'tempo': {
+                            const data = el.data as StoreOutline.DataTempo;
+                            let tempo = baseBlock.scoreBase.tempo;
+                            const prev = tempo;
+
+                            switch (data.method) {
+                                case 'rate': {
+                                    tempo = Math.floor(tempo * (data.val / 100));
+                                } break;
+                                case 'addition': {
+                                    tempo += data.val;
+                                }
+                            }
+                            lastTempo = {
+                                prev, next: tempo
+                            };
+
+                            baseBlock.scoreBase.tempo = tempo;
+                        } break;
+                    }
+                }
             }
             elementCaches.push(elementIndex);
         });
@@ -175,9 +264,6 @@ const useReducerCache = () => {
         store.cache.baseCaches = baseCaches;
         store.cache.chordCaches = chordCaches;
         store.cache.elementCaches = elementCaches;
-        // store.cache = {
-        //     baseCaches, chordCaches, elementCaches
-        // }
     };
 
     const getChordInfoFromElementSeq = (elementSeq: number) => {

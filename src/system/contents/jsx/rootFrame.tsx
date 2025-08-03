@@ -6,10 +6,10 @@ import SC from "~/system/common/styled";
 import TimelineFrame from "./timeline/timelineFrame";
 import TerminalFrame from "./terminal/terminalFrame";
 import { Show } from "solid-js";
-import { useGlobalStore } from "../store/store";
+import { getSnapshot } from "../store/store";
 
 const RootFrame = () => {
-    const { snapshot } = useGlobalStore();
+    const { snapshot } = getSnapshot();
 
     return <>
         <_HeaderDiv>

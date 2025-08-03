@@ -27,7 +27,6 @@ namespace StoreCache {
     }
 
     export interface ChordCache extends BeatRange {
-        baseSeq: number;
         elementSeq: number;
 
         beat: BeatCache;
@@ -39,8 +38,8 @@ namespace StoreCache {
     }
 
     export interface ModulateCahce {
-        prevTonality: MusicTheory.Tonality;
-        nextTonality: MusicTheory.Tonality;
+        prev: MusicTheory.Tonality;
+        next: MusicTheory.Tonality;
     }
     export interface TempoCahce {
         prev: number;
@@ -60,6 +59,7 @@ namespace StoreCache {
 
     export interface ElementCache extends StoreOutline.Element {
         chordSeq: number;
+        baseSeq: number;
         lastChordSeq: number;
     }
 }

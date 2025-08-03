@@ -29,9 +29,11 @@ const _Wrap = styled.div<{
     position: absolute;
     z-index: 1;
 
-    background-color: #ffffff5b;
+    background-color: #ffffff20;
     top: 0;
     left: ${props => props.left}px;
     width: ${props => props.width}px;
     height: 100%;
+
+    /* transition: width 0.5s ease; */
 `;
