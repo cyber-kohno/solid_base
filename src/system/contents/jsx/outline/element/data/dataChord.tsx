@@ -1,10 +1,8 @@
 import { createMemo, For } from "solid-js";
 import { styled } from "solid-styled-components";
 import SC from "~/system/common/styled";
-import useAccessorCache from "~/system/contents/store/accessor/accessorCache";
 import StoreOutline from "~/system/contents/store/data/storeOutline";
 import StoreCache from "~/system/contents/store/manage/storeCache";
-import { getSnapshot } from "~/system/contents/store/store";
 import MusicTheory from "~/system/contents/util/musicTheory";
 
 const TIP_BASE_WIDTH = 12;
@@ -13,9 +11,6 @@ const DataChord = (props: {
     data: StoreOutline.DataChord;
     cache: StoreCache.ChordCache;
 }) => {
-
-    const { snapshot } = getSnapshot();
-    const accessorCache = useAccessorCache(snapshot);
 
     const beatTips = createMemo((): number[] => {
         const chordInfo = props.cache;

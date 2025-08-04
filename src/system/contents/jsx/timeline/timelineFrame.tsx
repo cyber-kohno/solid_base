@@ -7,10 +7,41 @@ import ChordListFrame from "./header/chordListFrame";
 import ProgressInfoFrame from "./header/progressInfoFrame";
 import BeatMeasureFrame from "./header/beatMeasureFrame";
 import { store, getSnapshot } from "../../store/store";
-import { createMemo } from "solid-js";
+import { createMemo, Show } from "solid-js";
+import useAccessorCache from "../../store/accessor/accessorCache";
+import MusicTheory from "../../util/musicTheory";
+import PianoViewFrame from "./grid/pianoViewFrame";
 
 const TimelineFrame = () => {
     const { snapshot } = getSnapshot();
+
+    const accessorCache = useAccessorCache(snapshot);
+
+    const pianoInfo = createMemo(() => {
+        const element = accessorCache.getCurElement();
+
+        // コード要素以外では表示しない。
+        if (element.type !== 'chord') return null;
+
+        const chordCache = accessorCache.getCurChord();
+
+        const base = accessorCache.getCurBase();
+        const tonality = base.scoreBase.tonality;
+        const scaleList = MusicTheory.getScaleKeyIndexesFromTonality(tonality);
+
+        let uses: number[] = [];
+
+        const compiledChord = chordCache.compiledChord;
+        if (compiledChord) {
+
+            uses = compiledChord.structs.map(s => s.key12);
+        }
+
+        return {
+            scaleList,
+            uses,
+        }
+    });
 
     const headerWidth = createMemo(() => snapshot.cache.chordCaches.reduce((total, cur) => total + cur.viewPosWidth, 0));
     return (
@@ -21,14 +52,29 @@ const TimelineFrame = () => {
                     // console.log('store.ref.header = () => ref');
                     store.ref.header = () => ref;
                 }}>
-                    <BeatMeasureFrame  headerWidth={headerWidth()}/>
-                    <ChordListFrame headerWidth={headerWidth()}/>
-                    <ProgressInfoFrame  headerWidth={headerWidth()}/>
+                    <BeatMeasureFrame headerWidth={headerWidth()} />
+                    <ChordListFrame headerWidth={headerWidth()} />
+                    <ProgressInfoFrame headerWidth={headerWidth()} />
                 </_Active>
             </_HeaderDiv>
             <_MainDiv>
                 <PitchListFrame />
                 <GridRootFrame />
+
+                <Show when={pianoInfo() != null}>{(() => {
+                    const info = pianoInfo();
+                    if (info == null) return <></>
+                    const { scaleList, uses } = info;
+                    return (
+                        <_PianoDiv>
+                            <PianoViewFrame
+                                uiParam={{ width: 380, height: 80, wKeyNum: 14 }}
+                                scaleList={scaleList}
+                                uses={uses}
+                            />
+                        </_PianoDiv>
+                    );
+                })()}</Show>
             </_MainDiv>
         </_Wrap>
     );
@@ -64,4 +110,14 @@ const _MainDiv = styled.div`
     background-color: #16c4b0;
     width: 100%;
     height: calc(100% - ${Layout.timeline.HEADER_HEIGHT.toString()}px);
+`;
+
+const _PianoDiv = styled.div`
+    ${SC.absolute({})}
+    left: unset;
+    top: unset;
+    right: 5px;
+    bottom: 5px;
+    z-index: 4;
+    opacity: 0.95;
 `;

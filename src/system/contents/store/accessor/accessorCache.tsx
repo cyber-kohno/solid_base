@@ -19,11 +19,18 @@ const useAccessorCache = (snapshot: StoreProps) => {
         const element = getCurElement();
         return snapshot.cache.baseCaches[element.baseSeq];
     }
+    const getCurChord = () => {
+        const element = getCurElement();
+        if (element.chordSeq === -1) throw new Error('コード要素でないところで呼び出された。');
+        const chordCache = snapshot.cache.chordCaches[element.chordSeq];
+        return chordCache;
+    }
 
     return {
         getChordBlockRight,
         getCurElement,
-        getCurBase
+        getCurBase,
+        getCurChord,
     }
 }
 

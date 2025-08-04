@@ -3,36 +3,39 @@ import { keyframes, styled } from "solid-styled-components";
 import SC from "~/system/common/styled";
 import useReducerTerminal from "../../store/reducer/reducerTerminal";
 import { css } from "@emotion/react";
-import { getSnapshot } from "../../store/store";
+import { getSnapshot, store } from "../../store/store";
 import useAccessorTerminal from "../../store/accessor/accessorTerminal";
 
 const TerminalFrame = () => {
 
-  const {snapshot} = getSnapshot();
+  const { snapshot } = getSnapshot();
 
   const accessorTerminal = useAccessorTerminal(snapshot);
 
   const terminal = createMemo(() => accessorTerminal.getTerminal());
+  const histories = createMemo(() => accessorTerminal.getHistories());
 
-  const splitOrder = createMemo(() => accessorTerminal.getSplitOrder());
+  const splitCommand = createMemo(() => accessorTerminal.getSplitCommand());
 
   const convHtmlText = (str: string) => str.replace(/ /g, '\u00A0');
 
-  return (<_Div><_Wrap>
-    <For each={terminal().histories}>{getJsx => {
-      return getJsx();
-    }}</For>
+  const initRef = (ref: HTMLDivElement) => store.ref.terminal = () => ref;
+
+  return (<_Div><_Wrap ref={initRef}>
+    {/* ログ履歴 */}
+    <For each={histories()}>{jsx => jsx()}</For>
+    {/* コマンドのレコード */}
     <_Record isCurrent={true}>
       <_TargetSpan>{terminal().target + '>'}</_TargetSpan>
 
       {(() => {
-        const [orderLeft, orderRight] = splitOrder().map(str => convHtmlText(str));
+        const [commandLeft, commandRight] = splitCommand().map(str => convHtmlText(str));
         return (<>
           {/* フォーカスより前 */}
-          <_OrderInput>{orderLeft}</_OrderInput>
+          <_CommandInput>{commandLeft}</_CommandInput>
           <_Cursor />
           {/* フォーカスより後 */}
-          <_OrderInput>{orderRight}</_OrderInput>
+          <_CommandInput>{commandRight}</_CommandInput>
         </>);
       })()}
     </_Record>
@@ -41,7 +44,7 @@ const TerminalFrame = () => {
 export default TerminalFrame;
 
 const _Div = styled.div`
-  ${SC.absolute({zIndex: 4})}
+  ${SC.absolute({ zIndex: 4 })}
   width: 700px;
   height: 700px;
   background-color: #003650;
@@ -78,7 +81,7 @@ const _Record = styled.div<{
 const _TargetSpan = styled.span`
   color: yellow;
 `;
-const _OrderInput = styled.span`
+const _CommandInput = styled.span`
   color: #ffffff;
   border: none;
   background-color: transparent;

@@ -4,7 +4,7 @@ namespace StoreTerminal {
 
     export type Props = {
         histories: (()=>JSX.Element)[];
-        order: string;
+        command: string;
         target: string;
         focus: number;
     }

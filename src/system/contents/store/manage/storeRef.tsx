@@ -5,6 +5,7 @@ namespace StoreRef {
         header?: () => HTMLDivElement;
         pitch?: () => HTMLDivElement;
         outline?: () => HTMLDivElement;
+        terminal?: () => HTMLDivElement;
 
         elementRefs: { seq: number, get: () => HTMLDivElement }[];
     }

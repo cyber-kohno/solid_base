@@ -1,12 +1,12 @@
 import { For } from "solid-js";
-import { JSX } from "solid-js/jsx-runtime";
 import { styled } from "solid-styled-components";
 import SC from "~/system/common/styled";
+import FunctionRegister from "./functionRegister";
 
 namespace LogBuilder {
 
-    export const history = (target: string, order: string) => {
-        return () => <_Record>{`${target}>${order}`}</_Record>;
+    export const history = (target: string, command: string) => {
+        return () => <_Record>{`${target}>${command}`}</_Record>;
     }
     export const error = (str: string) => {
         return () => <_Record><_Error>{str}</_Error></_Record>;
@@ -23,6 +23,13 @@ namespace LogBuilder {
             </For>
         </_Block>;
     }
+
+    export const createRecord = (str: string) => {
+        return () => <_Record>{str}</_Record>
+    };
+    export const funcDef = (func: FunctionRegister.FuncProps) => {
+        return () => <_Record><_Func>{func.funcName}</_Func></_Record>
+    };
 }
 export default LogBuilder;
 
@@ -47,7 +54,7 @@ const _Record = styled.div`
     fontWeight: 400,
     lineHeight: 21,
     color: '#fff'
-  })}
+})}
 `;
 
 const _Func = styled.span`

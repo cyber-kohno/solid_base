@@ -116,6 +116,31 @@ const useInputOutline = () => {
 
         callbacks.holdG = () => {
             const data = element.data as StoreOutline.DataChord;
+
+            /**
+             * キーを半音単位で移動する
+             * @param dir 
+             */
+            const modKey = (dir: -1 | 1) => {
+                let isBlank = false;
+                if (data.degree == undefined) {
+                    const diatonic = MusicTheory.getDiatonicDegreeChord('major', 0);
+                    data.degree = diatonic;
+                    isBlank = true;
+                }
+                let temp = MusicTheory.getDegree12Index(data.degree);
+                if (!isBlank) {
+                    temp += dir;
+                }
+
+                if (isBlank || (temp >= 0 && temp <= 11)) {
+                    const degree12 = MusicTheory.getDegree12Props(temp, dir === -1);
+                    data.degree = { symbol: data.degree.symbol, ...degree12 };
+                    reducerOutline.setChordData(data);
+                    reducerCache.calculate();
+                }
+            }
+
             /**
              * コードブロックのケツのシンコペーションを増減する
              * @param dir 
@@ -134,6 +159,8 @@ const useInputOutline = () => {
             switch (eventKey) {
                 case 'ArrowLeft': modEat(-1); break;
                 case 'ArrowRight': modEat(1); break;
+                case 'ArrowUp': modKey(1); break;
+                case 'ArrowDown': modKey(-1); break;
             }
         }
         return callbacks;

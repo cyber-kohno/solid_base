@@ -12,7 +12,9 @@ const ElementList = () => {
     const elements = createMemo(() => {
         return snapshot.cache.elementCaches;
     });
-    return (<_Wrap ref={ref => store.ref.outline = () => ref}>
+
+    const initRef = (ref: HTMLDivElement) => store.ref.outline = () => ref;
+    return (<_Wrap ref={initRef}>
 
         <For each={elements()} >
             {(element, index) => {

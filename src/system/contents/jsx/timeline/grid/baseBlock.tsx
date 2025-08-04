@@ -12,7 +12,7 @@ const BaseBlock = (props: {
     baseBlock: StoreCache.BaseCache;
     index: number;
 }) => {
-    const {snapshot} = getSnapshot();
+    const { snapshot } = getSnapshot();
 
     const baseBlock = createMemo(() => props.baseBlock);
 

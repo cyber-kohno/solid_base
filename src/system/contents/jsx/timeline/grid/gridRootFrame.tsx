@@ -1,4 +1,4 @@
-import { createEffect, createSignal, For, onMount } from "solid-js";
+import { For } from "solid-js";
 import { styled } from "solid-styled-components";
 import SC from "~/system/common/styled";
 import Layout from "~/system/contents/const/layout";
@@ -11,10 +11,9 @@ import ChordBlock from "./chordBlock";
 const GridRootFrame = () => {
     const { snapshot } = getSnapshot();
 
-    return (<_Wrap ref={(ref) => {
-        // console.log('store.ref.grid = () => ref');
-        store.ref.grid = () => ref;
-    }}>
+    const initRef = (ref: HTMLDivElement) => store.ref.grid = () => ref;
+
+    return (<_Wrap ref={initRef}>
         <For each={snapshot.cache.baseCaches}>
             {(base, i) => <BaseBlock baseBlock={base} index={i()} />}
         </For>

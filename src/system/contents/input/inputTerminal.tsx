@@ -12,10 +12,10 @@ const useInputTerminal = () => {
                 reducerTerminal.close();
             } break;
             case 'Enter': {
-                reducerTerminal.registOrder();
+                reducerTerminal.registCommand();
             } break;
             case 'Backspace': {
-                reducerTerminal.removeOrder();
+                reducerTerminal.removeCommand();
             } break;
             case 'ArrowLeft': {
                 reducerTerminal.moveFocus(-1);
@@ -26,7 +26,7 @@ const useInputTerminal = () => {
             default: {
                 // 単一文字のキーのみ処理する
                 if (eventKey.length === 1) {
-                    reducerTerminal.insertOrder(eventKey);
+                    reducerTerminal.insertCommand(eventKey);
                 }
             } break;
         }

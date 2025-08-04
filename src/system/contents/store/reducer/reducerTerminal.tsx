@@ -1,6 +1,7 @@
-import assert from "assert";
-import { store, StoreProps, getSnapshot } from "../store";
-import TerminalManager from "../../terminal/terminalManager";
+import { store } from "../store";
+import FunctionRegister from "../../terminal/functionRegister";
+import LogBuilder from "../../terminal/logBuilder";
+import { JSX } from "solid-js/jsx-runtime";
 
 const useReducerTerminal = () => {
     const getTerminal = () => {
@@ -37,56 +38,72 @@ const useReducerTerminal = () => {
                 }
                 return ret;
             })(),
-            order: '',
+            command: '',
             focus: 0
         };
     };
     const close = () => {
         store.terminal = null;
     };
-    const registOrder = () => {
-        const { logs } = TerminalManager.registOrder();
 
-        const terminal = { ...getTerminal() };
+    /**
+     * コマンドを実行する。
+     */
+    const registCommand = () => {
+
+        const logs: (() => JSX.Element)[] = [];
+
+        const terminal = getTerminal();
+        logs.push(LogBuilder.history(terminal.target, terminal.command));
+
+        if (terminal.command !== '') {
+            const orderItems = terminal.command.split(' ');
+            const funcName = orderItems[0];
+            const args = orderItems.slice(1);
+
+            logs.push(...FunctionRegister.execute(terminal.target, funcName, args));
+        }
+
         terminal.focus = 0;
-        terminal.histories = terminal.histories.slice();
+        // terminal.histories = terminal.histories.slice();
         // terminal.histories.push(() => `${terminal.target}>${terminal.order}`);
         logs.forEach(l => terminal.histories.push(l));
-        terminal.order = '';
-        store.terminal = terminal;
+        // terminal.histories.push(...logs);
+        terminal.command = '';
+        // store.terminal = terminal;
     }
 
-    const setOrder = (callback: (prev: string) => string) => {
+    const setCommand = (callback: (prev: string) => string) => {
         const terminal = getTerminal();
-        terminal.order = callback(terminal.order);
+        terminal.command = callback(terminal.command);
     }
 
-    const splitOrder = () => {
+    const splitCommand = () => {
         const terminal = getTerminal();
         const splitStringAtIndex = (str: string, index: number) => {
             return [str.slice(0, index), str.slice(index)];
         }
-        return splitStringAtIndex(terminal.order, terminal.focus);
+        return splitStringAtIndex(terminal.command, terminal.focus);
     }
 
-    const removeOrder = () => {
-        const [left, right] = splitOrder();
+    const removeCommand = () => {
+        const [left, right] = splitCommand();
         if (left.length === 0) return;
-        setOrder(() => left.slice(0, left.length - 1) + right);
+        setCommand(() => left.slice(0, left.length - 1) + right);
         getTerminal().focus--;
     }
 
-    const insertOrder = (key: string) => {
-        const [left, right] = splitOrder();
-        setOrder(() => left + key + right);
+    const insertCommand = (key: string) => {
+        const [left, right] = splitCommand();
+        setCommand(() => left + key + right);
         getTerminal().focus += key.length;
     }
 
     const moveFocus = (dir: -1 | 1) => {
         const terminal = getTerminal();
         const newFocus = terminal.focus + dir;
-        const order = terminal.order;
-        if (newFocus >= 0 && newFocus <= order.length) terminal.focus = newFocus;
+        const command = terminal.command;
+        if (newFocus >= 0 && newFocus <= command.length) terminal.focus = newFocus;
     }
 
     return {
@@ -94,10 +111,10 @@ const useReducerTerminal = () => {
         isUse,
         open,
         close,
-        registOrder,
-        splitOrder,
-        removeOrder,
-        insertOrder,
+        registCommand,
+        splitCommand,
+        removeCommand,
+        insertCommand,
         moveFocus
     }
 }
