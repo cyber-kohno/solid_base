@@ -11,8 +11,12 @@ const useReducerOutline = () => {
     const getCurrentChordData = (): StoreOutline.DataChord => {
         const element = getCurrentElement();
         if (element.type !== 'chord') throw new Error('element.typeはchordでなければならない。');
-        const data = element.data;
-        return { ...data };
+        return element.data;
+    };
+    const getCurrentSectionData = (): StoreOutline.DataSection => {
+        const element = getCurrentElement();
+        if (element.type !== 'section') throw new Error('element.typeはsectionでなければならない。');
+        return element.data;
     };
 
     const insertElement = (element: StoreOutline.Element) => {
@@ -48,6 +52,7 @@ const useReducerOutline = () => {
     };
     return {
         getCurrentElement,
+        getCurrentSectionData,
         getCurrentChordData,
         insertElement,
         removeCurElement,

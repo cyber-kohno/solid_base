@@ -11,8 +11,13 @@ namespace LogBuilder {
     export const error = (str: string) => {
         return () => <_Record><_Error>{str}</_Error></_Record>;
     }
-    export const success = (func: string) => {
-        return () => <_Record><_Success>{func} successfull!</_Success></_Record>;
+    export const success = (target: string) => {
+        return () => <_Record>
+            <_Success><_Target>[{target}]</_Target> successfull!</_Success>
+        </_Record>;
+    }
+    export const diff = (prev: string, next: string) => {
+        return () => <_Record><_DiffItem>{prev}</_DiffItem>{` > `}<_DiffItem>{next}</_DiffItem></_Record>;
     }
 
     export const getFuncExecuteLog = (funcName: string, args: string[]) => {
@@ -29,6 +34,9 @@ namespace LogBuilder {
     };
     export const funcDef = (func: FunctionRegister.FuncProps) => {
         return () => <_Record><_Func>{func.funcName}</_Func></_Record>
+    };
+    export const list = (items: string[]) => {
+        return () => <_List><_Item>{items.join(' ')}</_Item></_List>
     };
 }
 export default LogBuilder;
@@ -56,6 +64,17 @@ const _Record = styled.div`
     color: '#fff'
 })}
 `;
+const _List = styled.div`
+  ${SC.rect}
+  width: 100%;
+  
+  ${SC.text({
+    fontSize: 18,
+    fontWeight: 400,
+    lineHeight: 21,
+    color: '#fff'
+})}
+`;
 
 const _Func = styled.span`
     /* background-color: #ffffff37; */
@@ -66,4 +85,16 @@ const _Error = styled.span`
 `;
 const _Success = styled.span`
     color: #7af2ff;
+`;
+const _Target = styled.span`
+    /* background-color: #f6ff0058;
+    border-radius: 2px; */
+    font-style: italic;
+    opacity: 0.6;
+`;
+const _Item = styled.span`
+    color: #4effd0;
+`;
+const _DiffItem = styled.span`
+    color: #fca522;
 `;

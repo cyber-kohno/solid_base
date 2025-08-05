@@ -5,6 +5,7 @@ import StoreOutline from "../store/data/storeOutline";
 import useReducerOutline from "../store/reducer/reducerOutline";
 import useReducerCache from "../store/reducer/reducerCache";
 import useReducerTerminal from "../store/reducer/reducerTerminal";
+import MusicTheory from "../util/musicTheory";
 
 namespace FunctionRegister {
 
@@ -15,6 +16,7 @@ namespace FunctionRegister {
         const funcs: FuncProps[] = getFuncs(target);
 
         const func = funcs.find(f => f.funcName === funcName);
+        // 関数の存在チェック
         if (func == undefined) {
             logs.push(LogBuilder.error(`${funcName} is undefined.`));
             return logs;
@@ -22,8 +24,9 @@ namespace FunctionRegister {
 
         // logs.push(LogBuilder.getFuncExecuteLog(funcName, args));
 
+        // 関数の引数チェック
         if (args.length < func.args.length) {
-            logs.push(LogBuilder.error(`${funcName} is undefined.`));
+            logs.push(LogBuilder.error(`Missing function[${funcName}] arguments.`));
             return logs;
         }
 
@@ -47,6 +50,7 @@ namespace FunctionRegister {
             case 'harmonize': {
                 switch (sectors[1] as StoreOutline.ElementType) {
                     case 'section': add(getFuncsHarmonizeSection()); break;
+                    case 'chord': add(getFuncsHarmonizeChord()); break;
                 }
             } break;
             case 'melody': add(getFuncsMelody());
@@ -110,13 +114,58 @@ namespace FunctionRegister {
             {
                 ...defaultProps,
                 funcName: 'rename',
-                args: [],
+                args: [{ name: 'newName' }],
                 callback: (args) => {
-                    reducerOutline.renameSectionData(args[0]);
+                    const prev = reducerOutline.getCurrentSectionData().name;
+                    const next = args[0];
+                    reducerOutline.renameSectionData(next);
                     reducerCache.calculate();
-                    return [];
+                    return [
+                        LogBuilder.success('rename'),
+                        LogBuilder.diff(prev, next)
+                    ];
+                }
+            },
+
+        ];
+    };
+    const getFuncsHarmonizeChord = (): FuncProps[] => {
+        const reducerOutline = useReducerOutline();
+        const reducerCache = useReducerCache();
+
+        const defaultProps = createDefaultProps('harmonize\\section');
+        return [
+            {
+                ...defaultProps,
+                funcName: 'symbol',
+                args: [{ name: 'symbol' }],
+                callback: (args) => {
+                    const degree = reducerOutline.getCurrentChordData().degree;
+                    if(degree == undefined) return [LogBuilder.error('This element has no chord set.')];
+                    const prev = degree.symbol;
+                    const next = args[0] as MusicTheory.ChordSymol;
+                    // シンボルの存在チェック
+                    if(!MusicTheory.ChordSymols.includes(next)) {
+                        return [LogBuilder.error(`The specified symbol[${next}] is invalid.`)];
+                    }
+                    degree.symbol = next;
+                    reducerCache.calculate();
+                    return [
+                        LogBuilder.success('mod symbol'),
+                        LogBuilder.diff(prev, next)
+                    ];
+                }
+            },
+            {
+                ...defaultProps,
+                funcName: 'symbols',
+                args: [],
+                callback: () => {
+                    const items = [...MusicTheory.ChordSymols] as string[];
+                    return [LogBuilder.list(items)];
                 }
             }
+
         ];
     };
     const getFuncsMelody = (): FuncProps[] => {
