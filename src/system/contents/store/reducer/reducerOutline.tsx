@@ -8,14 +8,29 @@ const useReducerOutline = () => {
         return store.data.elements[elementIndex];
     };
 
-    const getCurrentChordData = (): StoreOutline.DataChord => {
+    const getCurrentInitData = (): StoreOutline.DataInit => {
         const element = getCurrentElement();
-        if (element.type !== 'chord') throw new Error('element.typeはchordでなければならない。');
+        if (element.type !== 'init') throw new Error('element.typeはinitでなければならない。');
         return element.data;
     };
     const getCurrentSectionData = (): StoreOutline.DataSection => {
         const element = getCurrentElement();
         if (element.type !== 'section') throw new Error('element.typeはsectionでなければならない。');
+        return element.data;
+    };
+    const getCurrentChordData = (): StoreOutline.DataChord => {
+        const element = getCurrentElement();
+        if (element.type !== 'chord') throw new Error('element.typeはchordでなければならない。');
+        return element.data;
+    };
+    const getCurrentTempoData = (): StoreOutline.DataTempo => {
+        const element = getCurrentElement();
+        if (element.type !== 'tempo') throw new Error('element.typeはtempoでなければならない。');
+        return element.data;
+    };
+    const getCurrentModulateData = (): StoreOutline.DataModulate => {
+        const element = getCurrentElement();
+        if (element.type !== 'modulate') throw new Error('element.typeはmodulateでなければならない。');
         return element.data;
     };
 
@@ -54,6 +69,9 @@ const useReducerOutline = () => {
         getCurrentElement,
         getCurrentSectionData,
         getCurrentChordData,
+        getCurrentInitData,
+        getCurrentModulateData,
+        getCurrentTempoData,
         insertElement,
         removeCurElement,
         moveFocus,

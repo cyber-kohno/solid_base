@@ -49,8 +49,10 @@ namespace FunctionRegister {
         switch (sectors[0]) {
             case 'harmonize': {
                 switch (sectors[1] as StoreOutline.ElementType) {
+                    case 'init': add(getFuncsHarmonizeInit()); break;
                     case 'section': add(getFuncsHarmonizeSection()); break;
                     case 'chord': add(getFuncsHarmonizeChord()); break;
+                    case 'modulate': add(getFuncsHarmonizeModulate()); break;
                 }
             } break;
             case 'melody': add(getFuncsMelody());
@@ -141,11 +143,11 @@ namespace FunctionRegister {
                 args: [{ name: 'symbol' }],
                 callback: (args) => {
                     const degree = reducerOutline.getCurrentChordData().degree;
-                    if(degree == undefined) return [LogBuilder.error('This element has no chord set.')];
+                    if (degree == undefined) return [LogBuilder.error('This element has no chord set.')];
                     const prev = degree.symbol;
                     const next = args[0] as MusicTheory.ChordSymol;
                     // シンボルの存在チェック
-                    if(!MusicTheory.ChordSymols.includes(next)) {
+                    if (!MusicTheory.ChordSymols.includes(next)) {
                         return [LogBuilder.error(`The specified symbol[${next}] is invalid.`)];
                     }
                     degree.symbol = next;
@@ -165,6 +167,128 @@ namespace FunctionRegister {
                     return [LogBuilder.list(items)];
                 }
             }
+
+        ];
+    };
+    const getFuncsHarmonizeInit = (): FuncProps[] => {
+        const reducerOutline = useReducerOutline();
+        const reducerCache = useReducerCache();
+
+        const defaultProps = createDefaultProps('harmonize\\init');
+        return [
+            {
+                ...defaultProps,
+                funcName: 'tempo',
+                args: [{ name: 'value' }],
+                callback: (args) => {
+                    const data = reducerOutline.getCurrentInitData();
+                    const prev = data.tempo;
+                    const next = Number(args[0]);
+                    // シンボルの存在チェック
+                    if (Number.isNaN(next)) {
+                        return [LogBuilder.error(`The specified number[${next}] is invalid.`)];
+                    }
+                    data.tempo = next;
+                    reducerCache.calculate();
+                    return [
+                        LogBuilder.success('modified tempo'),
+                        LogBuilder.diff(prev.toString(), next.toString())
+                    ];
+                }
+            }
+
+        ];
+    };
+    const getFuncsHarmonizeModulate = (): FuncProps[] => {
+        const reducerOutline = useReducerOutline();
+        const reducerCache = useReducerCache();
+
+        const defaultProps = createDefaultProps('harmonize\\modulate');
+
+        const getCur = (data: StoreOutline.DataModulate) => `[${data.method}${data.val ? ' ' + data.val : ''}]`;
+        return [
+            {
+                ...defaultProps,
+                funcName: 'domm',
+                args: [{ name: 'value' }],
+                callback: (args) => {
+                    const data = reducerOutline.getCurrentModulateData();
+                    const prev = getCur(data);
+                    const value = args[0];
+
+                    // 数値の変換チェック
+                    if(!['-3', -'2', '-1', '0', '1', '2', '3'].includes(value)) {
+                        return [LogBuilder.error(`The specified value[${value}] is invalid.`)];
+                    }
+                    data.method = 'domm';
+                    data.val = Number(value);
+                    reducerCache.calculate();
+                    const next = `domm ${value}`;
+                    return [
+                        LogBuilder.success('domm'),
+                        LogBuilder.diff(prev, next)
+                    ];
+                }
+            },
+            {
+                ...defaultProps,
+                funcName: 'key',
+                args: [{ name: 'value' }],
+                callback: (args) => {
+                    const data = reducerOutline.getCurrentModulateData();
+                    const prev = getCur(data);
+                    const value = args[0];
+
+                    // 数値の変換チェック
+                    if(!['-3', -'2', '-1', '0', '1', '2', '3'].includes(value)) {
+                        return [LogBuilder.error(`The specified value[${value}] is invalid.`)];
+                    }
+                    data.method = 'key';
+                    data.val = Number(value);
+                    reducerCache.calculate();
+                    const next = `key ${value}`;
+                    return [
+                        LogBuilder.success('key'),
+                        LogBuilder.diff(prev, next)
+                    ];
+                }
+            },
+            {
+                ...defaultProps,
+                funcName: 'parallel',
+                args: [],
+                callback: () => {
+                    const data = reducerOutline.getCurrentModulateData();
+                    const prev = getCur(data);
+
+                    data.method = 'parallel';
+                    data.val = undefined;
+                    reducerCache.calculate();
+                    const next = `parallel`;
+                    return [
+                        LogBuilder.success('parallel'),
+                        LogBuilder.diff(prev, next)
+                    ];
+                }
+            },
+            {
+                ...defaultProps,
+                funcName: 'relative',
+                args: [],
+                callback: () => {
+                    const data = reducerOutline.getCurrentModulateData();
+                    const prev = getCur(data);
+
+                    data.method = 'relative';
+                    data.val = undefined;
+                    reducerCache.calculate();
+                    const next = `relative`;
+                    return [
+                        LogBuilder.success('relative'),
+                        LogBuilder.diff(prev, next)
+                    ];
+                }
+            },
 
         ];
     };
