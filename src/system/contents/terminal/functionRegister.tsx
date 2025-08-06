@@ -178,6 +178,16 @@ namespace FunctionRegister {
         return [
             {
                 ...defaultProps,
+                funcName: 'scales',
+                args: [],
+                callback: () => {
+                    const items = MusicTheory.KEY12_MAJOR_SCALE_LIST.map(i => i + 'major')
+                        .concat(MusicTheory.KEY12_MINOR_SCALE_LIST.map(i => i + 'minor'));
+                    return [LogBuilder.list(items)];
+                }
+            },
+            {
+                ...defaultProps,
                 funcName: 'tempo',
                 args: [{ name: 'value' }],
                 callback: (args) => {
@@ -195,7 +205,27 @@ namespace FunctionRegister {
                         LogBuilder.diff(prev.toString(), next.toString())
                     ];
                 }
-            }
+            },
+            {
+                ...defaultProps,
+                funcName: 'scale',
+                args: [{ name: 'key' }, { name: 'scale' }],
+                callback: (args) => {
+                    const data = reducerOutline.getCurrentInitData();
+                    const prev = data.tempo;
+                    const next = Number(args[0]);
+                    // シンボルの存在チェック
+                    if (Number.isNaN(next)) {
+                        return [LogBuilder.error(`The specified number[${next}] is invalid.`)];
+                    }
+                    data.tempo = next;
+                    reducerCache.calculate();
+                    return [
+                        LogBuilder.success('modified tempo'),
+                        LogBuilder.diff(prev.toString(), next.toString())
+                    ];
+                }
+            },
 
         ];
     };
@@ -217,7 +247,7 @@ namespace FunctionRegister {
                     const value = args[0];
 
                     // 数値の変換チェック
-                    if(!['-3', -'2', '-1', '0', '1', '2', '3'].includes(value)) {
+                    if (!['-3', -'2', '-1', '0', '1', '2', '3'].includes(value)) {
                         return [LogBuilder.error(`The specified value[${value}] is invalid.`)];
                     }
                     data.method = 'domm';
@@ -240,7 +270,7 @@ namespace FunctionRegister {
                     const value = args[0];
 
                     // 数値の変換チェック
-                    if(!['-3', -'2', '-1', '0', '1', '2', '3'].includes(value)) {
+                    if (!['-3', -'2', '-1', '0', '1', '2', '3'].includes(value)) {
                         return [LogBuilder.error(`The specified value[${value}] is invalid.`)];
                     }
                     data.method = 'key';
