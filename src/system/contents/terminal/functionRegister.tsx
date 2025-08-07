@@ -175,15 +175,16 @@ namespace FunctionRegister {
         const reducerCache = useReducerCache();
 
         const defaultProps = createDefaultProps('harmonize\\init');
+
+        const VALID_SCALES = MusicTheory.KEY12_MAJOR_SCALE_LIST.map(i => i + 'major')
+            .concat(MusicTheory.KEY12_MINOR_SCALE_LIST.map(i => i + 'minor'));
         return [
             {
                 ...defaultProps,
                 funcName: 'scales',
                 args: [],
                 callback: () => {
-                    const items = MusicTheory.KEY12_MAJOR_SCALE_LIST.map(i => i + 'major')
-                        .concat(MusicTheory.KEY12_MINOR_SCALE_LIST.map(i => i + 'minor'));
-                    return [LogBuilder.list(items)];
+                    return [LogBuilder.list(VALID_SCALES)];
                 }
             },
             {
@@ -209,20 +210,20 @@ namespace FunctionRegister {
             {
                 ...defaultProps,
                 funcName: 'scale',
-                args: [{ name: 'key' }, { name: 'scale' }],
+                args: [{ name: 'scale' }],
                 callback: (args) => {
                     const data = reducerOutline.getCurrentInitData();
-                    const prev = data.tempo;
-                    const next = Number(args[0]);
-                    // シンボルの存在チェック
-                    if (Number.isNaN(next)) {
-                        return [LogBuilder.error(`The specified number[${next}] is invalid.`)];
+                    const prev = MusicTheory.getScaleName(data.tonality);
+                    const next = args[0];
+                    // スケールの存在チェック
+                    if (!VALID_SCALES.includes(args[0])) {
+                        return [LogBuilder.error(`The specified scale[${next}] is invalid.`)];
                     }
-                    data.tempo = next;
+
                     reducerCache.calculate();
                     return [
-                        LogBuilder.success('modified tempo'),
-                        LogBuilder.diff(prev.toString(), next.toString())
+                        LogBuilder.success('modified scale'),
+                        LogBuilder.diff(prev, next)
                     ];
                 }
             },
@@ -328,6 +329,14 @@ namespace FunctionRegister {
 
         const defaultProps = createDefaultProps('melody');
         return [
+            {
+                ...defaultProps,
+                funcName: 'dl',
+                args: [],
+                callback: () => {
+                    return [LogBuilder.success('download midi')];
+                }
+            },
         ];
     };
 }

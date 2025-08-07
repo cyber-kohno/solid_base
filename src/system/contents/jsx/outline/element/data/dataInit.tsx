@@ -10,8 +10,7 @@ const DataInit = (props: {
 
     const values = createMemo(() => {
         const data = props.data;
-        const list = MusicTheory.KEY12_SHARP_LIST;
-        const keyScaleName = list[data.tonality.key12] + data.tonality.scale;
+        const keyScaleName = MusicTheory.getScaleName(data.tonality);
 
         const tsName = MusicTheory.getTSName(data.ts);
         return { keyScaleName, tsName, tempo: data.tempo };
