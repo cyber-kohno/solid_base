@@ -32,10 +32,15 @@ const GridFocus = () => {
         return { left, width, isChord };
     });
 
+    const isHarmonizeMode = createMemo(() => snapshot.control.mode === 'harmonize');
+
     return (<>{() => {
         const { left, width, isChord } = values();
         return (<_Wrap
-            left={left} width={width} isChord={isChord}
+            left={left}
+            width={width}
+            isChord={isChord}
+            isHarmonizeMode={isHarmonizeMode()}
         />);
     }}</>);
 }
@@ -45,6 +50,7 @@ const _Wrap = styled.div<{
     left: number;
     width: number;
     isChord: boolean;
+    isHarmonizeMode: boolean;
 }>`
     ${SC.absolute({ zIndex: 2 })}
     top: 0;
@@ -52,7 +58,7 @@ const _Wrap = styled.div<{
     width: ${props => props.width}px;
     height: 100%;
     ${props => props.isChord ? css`
-        background-color: #22f63e78;
+        background-color: ${props.isHarmonizeMode ? '#22f63e78;' : '#fffacd40;'}
     `.styles : css`
         background-color: #f60000da;
     `.styles};

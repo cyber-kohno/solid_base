@@ -1,3 +1,4 @@
+import StoreOutline from "../store/data/storeOutline";
 
 
 namespace MusicTheory {
@@ -111,6 +112,22 @@ namespace MusicTheory {
         const list = tonality.scale === 'major' ? KEY12_MAJOR_SCALE_LIST : KEY12_MINOR_SCALE_LIST;
         const keyName = list[tonality.key12];
         return `${keyName}${tonality.scale}`
+    }
+    export const getKeyScaleFromName = (name: string) => {
+        const [list, scale, keyName]: [string[], Scale, string] = (() => {
+            if (name.indexOf('major') !== -1) {
+                const keyName = name.substring(0, name.indexOf('major'));
+                return [KEY12_MAJOR_SCALE_LIST, 'major', keyName];
+            }
+            else if (name.indexOf('minor') !== -1) {
+                const keyName = name.substring(0, name.indexOf('minor'));
+                return [KEY12_MINOR_SCALE_LIST, 'minor', keyName];
+            }
+            throw new Error();
+        })();
+        const keyIndex = list.findIndex(k => k === keyName);
+        if (keyIndex === -1) throw new Error();
+        return { keyIndex, scale }
     }
 
     export const getTSName = (ts: TimeSignature) => `${ts.den}/${ts.num}`;

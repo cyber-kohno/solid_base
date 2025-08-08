@@ -6,6 +6,7 @@ import useReducerOutline from "../store/reducer/reducerOutline";
 import useReducerCache from "../store/reducer/reducerCache";
 import useReducerTerminal from "../store/reducer/reducerTerminal";
 import MusicTheory from "../util/musicTheory";
+import FileUtil from "../util/fileUtil";
 
 namespace FunctionRegister {
 
@@ -212,14 +213,17 @@ namespace FunctionRegister {
                 funcName: 'scale',
                 args: [{ name: 'scale' }],
                 callback: (args) => {
-                    const data = reducerOutline.getCurrentInitData();
-                    const prev = MusicTheory.getScaleName(data.tonality);
+                    const tonality = reducerOutline.getCurrentInitData().tonality;
+                    const prev = MusicTheory.getScaleName(tonality);
                     const next = args[0];
                     // スケールの存在チェック
                     if (!VALID_SCALES.includes(args[0])) {
                         return [LogBuilder.error(`The specified scale[${next}] is invalid.`)];
                     }
 
+                    const {keyIndex, scale} = MusicTheory.getKeyScaleFromName(next);
+                    tonality.key12 = keyIndex;
+                    tonality.scale = scale;
                     reducerCache.calculate();
                     return [
                         LogBuilder.success('modified scale'),
@@ -333,7 +337,8 @@ namespace FunctionRegister {
                 ...defaultProps,
                 funcName: 'dl',
                 args: [],
-                callback: () => {
+                callback: (args) => {
+                    FileUtil.downloadMidi(args[0]);
                     return [LogBuilder.success('download midi')];
                 }
             },

@@ -43,6 +43,8 @@ const TimelineFrame = () => {
         }
     });
 
+    const isHarmonizeMode = createMemo(() => snapshot.control.mode === 'harmonize');
+
     const headerWidth = createMemo(() => snapshot.cache.chordCaches.reduce((total, cur) => total + cur.viewPosWidth, 0));
     return (
         <_Wrap margin={6}>
@@ -61,7 +63,7 @@ const TimelineFrame = () => {
                 <PitchListFrame />
                 <GridRootFrame />
 
-                <Show when={pianoInfo() != null}>{(() => {
+                <Show when={isHarmonizeMode() && pianoInfo() != null}>{(() => {
                     const info = pianoInfo();
                     if (info == null) return <></>
                     const { scaleList, uses } = info;

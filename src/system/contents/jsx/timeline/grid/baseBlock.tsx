@@ -92,7 +92,7 @@ const _Wrap = styled.div<{
     position: absolute;
     z-index: 1;
 
-    background-color: #16c496;
+    background-color: #509784;
     top: 0;
     left: ${props => props.left}px;
     width: ${props => props.width}px;
