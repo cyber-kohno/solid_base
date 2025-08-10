@@ -11,6 +11,7 @@ import { createMemo, Show } from "solid-js";
 import useAccessorCache from "../../store/accessor/accessorCache";
 import MusicTheory from "../../util/musicTheory";
 import PianoViewFrame from "./grid/pianoViewFrame";
+import Cursor from "../melody/cursor";
 
 const TimelineFrame = () => {
     const { snapshot } = getSnapshot();

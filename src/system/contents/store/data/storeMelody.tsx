@@ -1,7 +1,6 @@
 namespace StoreMelody {
 
     export type Props = {
-        layers: MelodyLayer[];
         layerIndex: number;
         
         cursor: Note;
@@ -13,18 +12,19 @@ namespace StoreMelody {
         };
     }
 
-    export interface Norm {
+    export interface Tuplets {
         div: number;
-        tuplets: number;
+        size: number;
+    }
+    export interface Len {
+        div: number;
+        size: number;
+        tuplets?: Tuplets;
     }
 
-    export interface Pos {
-        norm: Norm;
-        pos: number;
-    }
-
-    export interface Note extends Pos {
-        len: number;
+    export interface Note {
+        pos: Len;
+        len: Len;
         pitch: number;
     }
     
@@ -35,7 +35,7 @@ namespace StoreMelody {
         volume: number;
         method: MelodyLayerMethod;
     }
-    export interface MelodyLayerNotes extends MelodyLayer {
+    export interface MelodyLayerScore extends MelodyLayer {
         soundFont: string;
         notes: Note[];
     }

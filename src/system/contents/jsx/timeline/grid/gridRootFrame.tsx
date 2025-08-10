@@ -7,6 +7,7 @@ import BaseBlock from "./baseBlock";
 import GridFocus from "./gridFocus";
 import MarginBlock from "../../common/marginBlock";
 import ChordBlock from "./chordBlock";
+import Cursor from "../../melody/cursor";
 
 const GridRootFrame = () => {
     const { snapshot } = getSnapshot();
@@ -22,6 +23,10 @@ const GridRootFrame = () => {
         </For>
         <MarginBlock.Block />
         <GridFocus />
+
+        <Show when={snapshot.control.mode === 'melody'}>
+            <Cursor />
+        </Show>
     </_Wrap>);
 };
 export default GridRootFrame;
