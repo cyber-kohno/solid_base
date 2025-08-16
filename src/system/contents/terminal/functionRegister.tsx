@@ -7,6 +7,11 @@ import useReducerCache from "../store/reducer/reducerCache";
 import useReducerTerminal from "../store/reducer/reducerTerminal";
 import MusicTheory from "../util/musicTheory";
 import FileUtil from "../util/fileUtil";
+import { store } from "../store/store";
+import StoreMelody from "../store/data/storeMelody";
+import useReducerMelody from "../store/reducer/reducerMelody";
+import StorePreview from "../store/manage/storePreview";
+import useAccessorMelody from "../store/accessor/accessorMelody";
 
 namespace FunctionRegister {
 
@@ -86,6 +91,7 @@ namespace FunctionRegister {
         items: FuncProps[];
     }): FuncProps[] => {
         const reducer = useReducerTerminal();
+        const { loadSFPlayer } = useReducerMelody();
 
         const defaultProps = createDefaultProps('common');
         return [
@@ -104,6 +110,35 @@ namespace FunctionRegister {
                 args: [],
                 callback: () => {
                     return props.items.map(item => LogBuilder.funcDef(item));
+                }
+            },
+            {
+                ...defaultProps,
+                funcName: 'save',
+                args: [],
+                callback: () => {
+                    FileUtil.saveScoreFile({ update: () => { } });
+                    return [LogBuilder.success('save')];
+                }
+            },
+            {
+                ...defaultProps,
+                funcName: 'load',
+                args: [],
+                callback: () => {
+                    FileUtil.loadScoreFile(() => {
+                        store.data.tracks.forEach(t => {
+                            if (t.method === 'score') {
+                                const scoreTrack = t as StoreMelody.ScoreTrack;
+                                if (scoreTrack.soundFont !== '') {
+                                    const sfName = StorePreview.validateSFName(scoreTrack.soundFont);
+                                    console.log(sfName);
+                                    loadSFPlayer(sfName);
+                                }
+                            }
+                        });
+                    });
+                    return [LogBuilder.success('load')];
                 }
             }
         ];
@@ -221,7 +256,7 @@ namespace FunctionRegister {
                         return [LogBuilder.error(`The specified scale[${next}] is invalid.`)];
                     }
 
-                    const {keyIndex, scale} = MusicTheory.getKeyScaleFromName(next);
+                    const { keyIndex, scale } = MusicTheory.getKeyScaleFromName(next);
                     tonality.key12 = keyIndex;
                     tonality.scale = scale;
                     reducerCache.calculate();
@@ -328,18 +363,106 @@ namespace FunctionRegister {
         ];
     };
     const getFuncsMelody = (): FuncProps[] => {
-        const reducerOutline = useReducerOutline();
-        const reducerCache = useReducerCache();
+        const { changeScoreTrack, setSFCurTrack } = useReducerMelody();
 
         const defaultProps = createDefaultProps('melody');
+        const melody = store.control.melody;
+        const track = store.data.tracks[melody.trackIndex];
         return [
             {
                 ...defaultProps,
-                funcName: 'dl',
+                funcName: 'midi',
                 args: [],
                 callback: (args) => {
-                    FileUtil.downloadMidi(args[0]);
-                    return [LogBuilder.success('download midi')];
+                    FileUtil.downloadMidi(args[0] ?? 'melody');
+                    return [
+                        LogBuilder.list(store.data.tracks.map(l => `name: ${l.name}, method:${l.method}`)),
+                        LogBuilder.success('download midi')
+                    ];
+                }
+            },
+            {
+                ...defaultProps,
+                funcName: 'tracks',
+                args: [],
+                callback: () => {
+                    const trackIndex = store.control.melody.trackIndex;
+                    return [
+                        ...store.data.tracks.map((l, i) => LogBuilder.list(
+                            [`${trackIndex === i ? '*' : ''}`, `name: ${l.name}`, `method: ${l.method}`, `soundfont: ${(l as StoreMelody.ScoreTrack).soundFont}`]
+                        ))
+                    ];
+                }
+            },
+            {
+                ...defaultProps,
+                funcName: 'mk',
+                args: [],
+                callback: (args) => {
+                    const tracks = store.data.tracks;
+                    const name = args[0] ?? `track${tracks.length}`;
+                    const track: StoreMelody.ScoreTrack = {
+                        name,
+                        method: 'score',
+                        isMute: false,
+                        volume: 10,
+                        soundFont: '',
+                        notes: []
+                    };
+                    tracks.push(track);
+                    return [
+                        LogBuilder.success('make score track!')
+                    ];
+                }
+            },
+            {
+                ...defaultProps,
+                funcName: 'ch',
+                args: [],
+                callback: (args) => {
+                    changeScoreTrack(Number(args[0]));
+                    const track = store.data.tracks[store.control.melody.trackIndex];
+                    return [
+                        LogBuilder.success(`change track! [${track.name}]`)
+                    ];
+                }
+            },
+            {
+                ...defaultProps,
+                funcName: 'sf',
+                args: [],
+                callback: (args) => {
+
+                    const sfName = StorePreview.validateSFName(args[0]);
+                    setSFCurTrack(sfName);
+                    return [
+                        LogBuilder.success('set soundfont!')
+                    ];
+                }
+            },
+            {
+                ...defaultProps,
+                funcName: 'mute',
+                args: [],
+                callback: () => {
+
+                    track.isMute = !track.isMute;
+                    return [
+                        LogBuilder.success('mute!')
+                    ];
+                }
+            },
+            {
+                ...defaultProps,
+                funcName: 'sfs',
+                args: [],
+                callback: (args) => {
+                    const items = StorePreview.getInstrumentNames().filter(n => {
+                        const v = args[0];
+                        if (v == undefined) return true;
+                        else return n.indexOf(v) !== -1;
+                    });
+                    return [LogBuilder.list(items)];
                 }
             },
         ];

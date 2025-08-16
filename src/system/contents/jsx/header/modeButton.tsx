@@ -31,6 +31,6 @@ const _Wrap = styled('div') <{
     border: 1px solid #fff;
     background-color: #aadcdd;
     ${props => !props.isActive ? '' : css`
-        background-color: #cfcf58;
+        background-color: #58cfc1;
     `.styles}
 `;

@@ -53,12 +53,12 @@ const useInputOutline = () => {
 
             case 'ArrowUp': {
                 reducerOutline.moveFocus(-1);
-                reducerRef.adjustGridScrollX();
+                reducerRef.adjustGridScrollXFromOutline();
                 reducerRef.adjustOutlineScroll();
             } break;
             case 'ArrowDown': {
                 reducerOutline.moveFocus(1);
-                reducerRef.adjustGridScrollX();
+                reducerRef.adjustGridScrollXFromOutline();
                 reducerRef.adjustOutlineScroll();
 
             } break;
@@ -129,7 +129,7 @@ const useInputOutline = () => {
                         if (temp >= 1 && temp <= 4) chordData.beat = temp;
                         // reducerOutline.setChordData(chordData);
                         reducerCache.calculate();
-                        reducerRef.adjustGridScrollX();
+                        reducerRef.adjustGridScrollXFromOutline();
                     }
                     switch (eventKey) {
                         case 'ArrowLeft': modBeat(-1); break;
@@ -156,7 +156,7 @@ const useInputOutline = () => {
                     data.eat = temp;
                     reducerOutline.setChordData(data);
                     reducerCache.calculate();
-                    reducerRef.adjustGridScrollX();
+                    reducerRef.adjustGridScrollXFromOutline();
                 }
             }
             switch (eventKey) {

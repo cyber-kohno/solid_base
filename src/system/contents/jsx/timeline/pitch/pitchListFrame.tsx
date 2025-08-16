@@ -8,7 +8,7 @@ import MusicTheory from "~/system/contents/util/musicTheory";
 const PitchListFrame = () => {
 
     const pitchNames = createMemo(() => {
-        return [...Array(92).keys()]
+        return [...Array(Layout.pitch.NUM).keys()]
             .map(v => MusicTheory.getPitchKey(v)
                 .reverse().join(""))
             // 音程は低い順に下から並べる
@@ -33,10 +33,11 @@ const _Wrap = styled.div`
 `;
 const _Item = styled.div`
     ${SC.rect}
-    ${SC.text({ color: '#dc0b0b7d' })}
-    background-color: #cfce82;
+    ${SC.text({ color: '#fafaffb2' })}
+    background-color: #82c0cf;
     width: 100%;
     height: 30px;
     border: 1px solid #00000063;
     box-sizing: border-box;
+    padding: 0 0 0 2px;
 `;

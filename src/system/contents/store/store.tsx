@@ -6,6 +6,8 @@ import StoreTerminal from "./manage/storeTerminal";
 import StoreCache from "./manage/storeCache";
 import { proxy, useSnapshot } from "solid-valtio";
 import StoreRef from "./manage/storeRef";
+import StoreMelody from "./data/storeMelody";
+import StorePreview from "./manage/storePreview";
 
 export type StoreProps = {
     control: StoreControl.Props;
@@ -14,6 +16,7 @@ export type StoreProps = {
     thema: Thema.Props;
 
     input: StoreInput.KeyState;
+    preview: StorePreview.Props;
 
     cache: StoreCache.Props;
 
@@ -22,9 +25,15 @@ export type StoreProps = {
     },
 
     ref: StoreRef.Props;
+
+    fileHandle: {
+        score?: FileSystemFileHandle
+    },
+
+    info: string;
 };
 
-export const store: StoreProps = proxy({
+export const store = proxy<StoreProps>({
     thema: {
         main: "#599",
         accent: "#999",
@@ -37,26 +46,22 @@ export const store: StoreProps = proxy({
         },
         melody: {
             cursor: {
-                pos: { size: 0, div: 1 },
-                len: { size: 1, div: 1 },
-                pitch: 33
+                norm: { div: 1 },
+                pos: 0,
+                len: 1,
+                pitch: 42
             },
             focus: -1,
             focusLock: -1,
             isOverlap: false,
-            layerIndex: 0,
+            trackIndex: 0,
             clipboard: { notes: null }
         }
     },
     terminal: null,
     data: {
         elements: StoreOutline.getInitialElements(),
-        layers: [{
-            name: '',
-            method: 'score',
-            volume: 10,
-            isMute: false
-        }],
+        tracks: [StoreMelody.createMelodyTrackScoreInitial()],
     },
 
     input: {
@@ -69,7 +74,15 @@ export const store: StoreProps = proxy({
         holdShift: false,
         holdCtrl: false,
     },
-
+    preview: {
+        timerKeys: null,
+        intervalKeys: null,
+        lastTime: -1,
+        progressTime: -1,
+        linePos: -1,
+        audios: [],
+        sfItems: []
+    },
     cache: {
         baseCaches: [],
         chordCaches: [],
@@ -77,12 +90,15 @@ export const store: StoreProps = proxy({
     },
 
     env: {
-        beatWidth: 100
+        beatWidth: 120
     },
 
     ref: {
         elementRefs: []
-    }
+    },
+    fileHandle: {
+    },
+    info: ''
 });
 
 export const getSnapshot = () => {

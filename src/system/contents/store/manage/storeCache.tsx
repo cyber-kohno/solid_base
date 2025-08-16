@@ -23,7 +23,7 @@ namespace StoreCache {
     }
     export interface BaseCache extends BeatRange {
         scoreBase: StoreOutline.DataInit;
-
+        startBar: number;
     }
 
     export interface ChordCache extends BeatRange {

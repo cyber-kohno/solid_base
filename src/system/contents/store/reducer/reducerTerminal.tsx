@@ -2,8 +2,12 @@ import { store } from "../store";
 import FunctionRegister from "../../terminal/functionRegister";
 import LogBuilder from "../../terminal/logBuilder";
 import { JSX } from "solid-js/jsx-runtime";
+import useReducerRef from "./reducerRef";
 
 const useReducerTerminal = () => {
+
+    const {adjustTerminalScroll} = useReducerRef();
+
     const getTerminal = () => {
         const terminal = store.terminal;
         if (terminal == null) throw new Error('terminalがnullでgetTerminalを呼び出さしてはならない。');
@@ -70,7 +74,8 @@ const useReducerTerminal = () => {
         logs.forEach(l => terminal.histories.push(l));
         // terminal.histories.push(...logs);
         terminal.command = '';
-        // store.terminal = terminal;
+        
+        adjustTerminalScroll();
     }
 
     const setCommand = (callback: (prev: string) => string) => {

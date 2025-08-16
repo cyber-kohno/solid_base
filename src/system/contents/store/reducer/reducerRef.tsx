@@ -1,14 +1,47 @@
+import Layout from "../../const/layout";
+import StoreMelody from "../data/storeMelody";
 import { store } from "../store";
 
 const useReducerRef = () => {
 
-    const adjustGridScrollX = () => {
+    const adjustGridScrollX = (getLeft: ((width: number) => number)) => {
 
         if (store.ref.grid && store.ref.header) {
             const gridRef = store.ref.grid();
             const headerRef = store.ref.header();
             const width = gridRef.getBoundingClientRect().width;
 
+            const left = getLeft(width);
+            gridRef.scrollTo({ left, behavior: "smooth" });
+            headerRef.scrollTo({ left, behavior: "smooth" });
+        }
+    }
+
+    const adjustGridScrollY = (getTop: ((height: number) => number)) => {
+        if (store.ref.grid && store.ref.pitch) {
+            const gridRef = store.ref.grid();
+            const pitchRef = store.ref.pitch();
+            const height = gridRef.getBoundingClientRect().height;
+
+            const top = getTop(height);
+            gridRef.scrollTo({ top, behavior: "smooth" });
+            pitchRef.scrollTo({ top, behavior: "smooth" });
+        }
+    }
+
+    const adjustGridScrollXFromNote = (note: StoreMelody.Note) => {
+        const [pos, len] = [note.pos, note.len]
+            .map(size => StoreMelody.calcBeat(note.norm, size) * store.env.beatWidth);
+        adjustGridScrollX((width) => pos + len / 2 - width / 2);
+    }
+
+    const adjustGridScrollYFromCursor = (note: StoreMelody.Note) => {
+        const pos = (Layout.pitch.NUM - note.pitch) * Layout.pitch.ITEM_HEIGHT;
+        adjustGridScrollY((height) => pos - height / 2);
+    }
+    const adjustGridScrollXFromOutline = () => {
+
+        adjustGridScrollX((width) => {
             const focus = store.control.outline.focus;
             const cache = store.cache;
             const { lastChordSeq, chordSeq } = cache.elementCaches[focus];
@@ -24,18 +57,15 @@ const useReducerRef = () => {
                     pos = chordCache.viewPosLeft + chordCache.viewPosWidth - width / 2;
                 }
             }
-            // pos -= width / 2;
-            // console.log(pos);
-            gridRef.scrollTo({ left: pos, behavior: "smooth" });
-            headerRef.scrollTo({ left: pos, behavior: "smooth" });
-        }
+            return pos;
+        });
     }
 
     const adjustOutlineScroll = () => {
 
         if (store.ref.outline) {
-            const outlineRef = store.ref.outline();
-            const { height: outlineHeight, top: outlineTop } = outlineRef.getBoundingClientRect();
+            const ref = store.ref.outline();
+            const { height: outlineHeight, top: outlineTop } = ref.getBoundingClientRect();
 
             const focus = store.control.outline.focus;
             let top = 0;
@@ -43,16 +73,29 @@ const useReducerRef = () => {
             if (elementRef) {
                 const rect = elementRef.get().getBoundingClientRect();
                 // console.log(`seq:${elementRef.seq}, y:${rect.y}`);
-                const domY = rect.y - outlineTop + outlineRef.scrollTop;
+                const domY = rect.y - outlineTop + ref.scrollTop;
                 top = domY + rect.height / 2 - outlineHeight / 2;
             }
-            outlineRef.scrollTo({ top, behavior: "smooth" });
+            ref.scrollTo({ top, behavior: "smooth" });
+        }
+    }
+    const adjustTerminalScroll = () => {
+
+        if (store.ref.terminal) {
+            const ref = store.ref.terminal();
+            const {height: frameHeight} = ref.getBoundingClientRect();
+
+            const top = ref.scrollHeight - frameHeight / 2;
+            ref.scrollTo({ top, behavior: "smooth" });
         }
     }
 
     return {
-        adjustGridScrollX,
-        adjustOutlineScroll
+        adjustGridScrollXFromOutline,
+        adjustOutlineScroll,
+        adjustGridScrollXFromNote,
+        adjustGridScrollYFromCursor,
+        adjustTerminalScroll
     };
 };
 

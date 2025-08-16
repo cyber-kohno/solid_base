@@ -31,6 +31,6 @@ const _Wrap = styled('div')`
     ${SC.rect}
     width: 100%;
     height: calc(100% - ${(layout.HEADER_HEIGHT + layout.FOOTER_HEIGHT).toString()}px);
-    background-color: #e9dfdf;
+    background-color: #cee7e9;
     overflow: hidden;
 `;

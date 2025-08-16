@@ -73,28 +73,36 @@ const _List = styled.div`
     fontWeight: 400,
     lineHeight: 21,
     color: '#fff'
-})}
+  })}
+  line-height: 28px;
 `;
 
 const _Func = styled.span`
     /* background-color: #ffffff37; */
     color: #3cff00;
+    background-color: black;
 `;
 const _Error = styled.span`
     color: #ff0000;
+    font-weight: 300;
+    background-color: black;
 `;
 const _Success = styled.span`
     color: #7af2ff;
+    background-color: black;
 `;
 const _Target = styled.span`
     /* background-color: #f6ff0058;
     border-radius: 2px; */
     font-style: italic;
     opacity: 0.6;
+    background-color: black;
 `;
 const _Item = styled.span`
     color: #4effd0;
+    background-color: black;
 `;
 const _DiffItem = styled.span`
     color: #fca522;
+    background-color: black;
 `;

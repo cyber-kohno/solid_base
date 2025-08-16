@@ -40,7 +40,7 @@ const _Wrap = styled.div<{
     width: number;
 }>`
     ${SC.rect}
-    background-color: #cd68cb;
+    /* background-color: #cd68cb; */
     min-width: 100%;
     width: ${props => props.width}px;
     height: ${Layout.timelineHeader.BLOCK_HEIGHT.toString()}px;
@@ -53,7 +53,7 @@ const _Item = styled.div<{
     display: inline-block;
     position: absolute;
     z-index: 1;
-    background-color: #500000d6;
+    background-color: #354886d4;
     left: ${props => props.left}px;
     width: ${props => props.width}px;
     height: ${Layout.timelineHeader.BLOCK_HEIGHT.toString()}px;
@@ -63,11 +63,11 @@ const _Inner = styled.div<{
     isFocus: boolean;
 }>`
     ${SC.wrap({ margin: 2 })}
-    background-color: #b7a4a48f;
+    background-color: #a4b3b78f;
 
-    ${SC.text({ fontSize: 22, lineHeight: 36 })}
+    ${SC.text({ fontSize: 22, lineHeight: 36, color: '#ffffffc5' })}
     text-align: center;
     ${props => !props.isFocus ? '' : css`
-        background-color: #b3c41686;
+        background-color: #16c4b885;
     `.styles}
 `;

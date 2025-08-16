@@ -11,7 +11,6 @@ import { createMemo, Show } from "solid-js";
 import useAccessorCache from "../../store/accessor/accessorCache";
 import MusicTheory from "../../util/musicTheory";
 import PianoViewFrame from "./grid/pianoViewFrame";
-import Cursor from "../melody/cursor";
 
 const TimelineFrame = () => {
     const { snapshot } = getSnapshot();
@@ -47,6 +46,7 @@ const TimelineFrame = () => {
     const isHarmonizeMode = createMemo(() => snapshot.control.mode === 'harmonize');
 
     const headerWidth = createMemo(() => snapshot.cache.chordCaches.reduce((total, cur) => total + cur.viewPosWidth, 0));
+
     return (
         <_Wrap margin={6}>
             <_HeaderDiv>
@@ -55,9 +55,9 @@ const TimelineFrame = () => {
                     // console.log('store.ref.header = () => ref');
                     store.ref.header = () => ref;
                 }}>
-                    <BeatMeasureFrame headerWidth={headerWidth()} />
                     <ChordListFrame headerWidth={headerWidth()} />
                     <ProgressInfoFrame headerWidth={headerWidth()} />
+                    <BeatMeasureFrame headerWidth={headerWidth()} />
                 </_Active>
             </_HeaderDiv>
             <_MainDiv>
@@ -110,7 +110,7 @@ const _Active = styled.div`
 
 const _MainDiv = styled.div`
     ${SC.rect}
-    background-color: #16c4b0;
+    background-color: #5b6466;
     width: 100%;
     height: calc(100% - ${Layout.timeline.HEADER_HEIGHT.toString()}px);
 `;

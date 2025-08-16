@@ -59,7 +59,7 @@ const _Wrap = styled.div<{
     width: number;
 }>`
     ${SC.rect}
-    background-color: #4d625d;
+    background-color: #5d817a;
     min-width: 100%;
     width: ${props => props.width}px;
     height: ${Layout.timelineHeader.INFO_HEIGHT.toString()}px;

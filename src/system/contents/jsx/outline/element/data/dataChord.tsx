@@ -1,4 +1,4 @@
-import { createMemo, For } from "solid-js";
+import { createMemo, For, Show } from "solid-js";
 import { styled } from "solid-styled-components";
 import SC from "~/system/common/styled";
 import StoreOutline from "~/system/contents/store/data/storeOutline";
@@ -44,14 +44,14 @@ const DataChord = (props: {
 
     const chordName = createMemo(() => {
         const compiledChord = props.cache.compiledChord;
-        if (compiledChord == undefined) return '-';
+        if (compiledChord == undefined) return null;
         return MusicTheory.getKeyChordName(compiledChord.chord);
     });
 
     // const chordSeq = createMemo(() => accessorCache.getCurElement().chordSeq);
 
     return (<_Wrap>
-        <_SeqDiv>{0}</_SeqDiv>
+        <_SeqDiv>{props.cache.elementSeq}</_SeqDiv>
         <_TipDiv>
             <For each={beatTips()}>{tip => {
 
@@ -59,7 +59,10 @@ const DataChord = (props: {
             }}</For>
         </_TipDiv>
         <_DegreeDiv>{degreeName()}</_DegreeDiv>
-        <_ChordDiv>{chordName()}</_ChordDiv>
+        <Show when={chordName()}>
+            <_ChordDiv>{chordName()}  </_ChordDiv>
+        </Show>
+
     </_Wrap>);
 }
 export default DataChord;
@@ -68,7 +71,10 @@ const _Wrap = styled.div`
     ${SC.rect}
     width: 100%;
     height: 100%;
-    background-color: #a7a093;
+    background-color: #acd3d2;
+    border: solid 1px #2e6d77;
+    box-sizing: border-box;
+    border-radius: 4px;
 `;
 const _SeqDiv = styled.div`
     ${SC.rect}
@@ -116,7 +122,7 @@ const _DegreeDiv = styled.div`
     text-align: center;
     font-size: 22px;
     font-weight: 600;
-    color: #ccc;
+    color: #d4e3e5;
 `;
 const _ChordDiv = styled.div`
     ${SC.rect}

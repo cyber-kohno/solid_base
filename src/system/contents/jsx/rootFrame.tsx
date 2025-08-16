@@ -49,12 +49,12 @@ const _OutlineDiv = styled('div')`
     ${SC.rect}
     width: ${Layout.root.OUTLINE_WIDTH + 'px'};
     height: 100%;
-    background-color: #09aced;
+    background-color: #82cce9;
 `;
 
 const _TimelineDiv = styled('div')`
     ${SC.rect}
     width: calc(100% - ${Layout.root.OUTLINE_WIDTH + 'px'});
     height: 100%;
-    background-color: #09d2ed;
+    background-color: #c6dee1;
 `;

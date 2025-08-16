@@ -6,7 +6,7 @@ namespace StoreData {
     export type Props = {
         
         elements: StoreOutline.Element[];
-        layers: StoreMelody.MelodyLayer[];
+        tracks: StoreMelody.Track[];
     }
 }
 export default StoreData;

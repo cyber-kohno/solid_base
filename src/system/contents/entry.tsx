@@ -11,6 +11,22 @@ export const Entry = () => {
     const { snapshot } = getSnapshot();
     const inputRoot = useInputRoot();
 
+    onMount(() => {
+
+        const handleKeyDown = (event: KeyboardEvent) => {
+            // Ctrl + キーが押されたとき
+            if (event.ctrlKey && ['a', 's', 'l', 'o', 't'].includes(event.key)) {
+                event.preventDefault(); // デフォルトの動作を無効にする
+            }
+        };
+        window.addEventListener("keydown", handleKeyDown);
+
+        // クリーンアップ関数を設定してイベントリスナーを削除
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    });
+
     const reducerCache = useReducerCache();
 
     const isStandby = createMemo(() => snapshot.cache.elementCaches.length === 0);
@@ -37,5 +53,5 @@ export const Entry = () => {
 export default Entry;
 
 const _Wrap = styled(SC._Wrap)`
-    background-color: #16adc4;
+    /* background-color: #16adc4; */
 `;

@@ -28,5 +28,5 @@ const _FooterDiv = styled.div`
     ${SC.rect}
     width: 100%;
     height: ${layout.FOOTER_HEIGHT.toString()}px;
-    background-color: #b5f1a3;
+    background-color: #a3ced5;
 `;

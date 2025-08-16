@@ -1,3 +1,4 @@
+import StoreMelody from "../data/storeMelody";
 import StoreOutline from "../data/storeOutline";
 import { store } from "../store";
 
@@ -65,6 +66,14 @@ const useReducerOutline = () => {
         if (element.type !== 'chord') throw Error(`chord要素でない。[${element.type}]`);
         element.data = data;
     };
+
+    const syncChordSeqFromNote = (note: StoreMelody.Note) => {
+        const cursorPos = StoreMelody.calcBeat(note.norm, note.pos);
+        const chord = store.cache.chordCaches.find(c => c.startBeatNote <= cursorPos && c.startBeatNote + c.lengthBeatNote > cursorPos);
+        if (chord == undefined) throw new Error();
+        store.control.outline.focus = chord.elementSeq;
+    }
+
     return {
         getCurrentElement,
         getCurrentSectionData,
@@ -77,6 +86,7 @@ const useReducerOutline = () => {
         moveFocus,
         renameSectionData,
         setChordData,
+        syncChordSeqFromNote,
     }
 };
 

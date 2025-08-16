@@ -23,7 +23,8 @@ const useReducerCache = () => {
             lengthBeatNote: 0,
             viewPosLeft: 0,
             viewPosWidth: 0,
-            scoreBase: JSON.parse(JSON.stringify(initialScoreBase))
+            scoreBase: JSON.parse(JSON.stringify(initialScoreBase)),
+            startBar: 1
         }
 
         let startBeat = 0;
@@ -42,7 +43,7 @@ const useReducerCache = () => {
         let lastTempo: StoreCache.TempoCahce | undefined = undefined;
 
         elements.forEach((el, i) => {
-            let beatSize = 0;
+            // let beatSize = 0;
             const elementIndex: StoreCache.ElementCache = {
                 // データ要素をディープコピー
                 ...JSON.parse(JSON.stringify(el)),
@@ -50,7 +51,7 @@ const useReducerCache = () => {
                 chordSeq: -1,
                 lastChordSeq
             }
-            
+
             // let modulateCache: StoreCache.ModulateCahce | undefined = undefined;
             // let tempoCache: StoreCache.TempoCahce | undefined = undefined;
 
@@ -118,9 +119,8 @@ const useReducerCache = () => {
 
                     const beatDiv16Cnt = MusicTheory.getBeatDiv16Count(baseBlock.scoreBase.ts);
                     const beatRate = beatDiv16Cnt / 4;
-                    beatSize = (data.beat + (prevEat * -1 + data.eat) / beatDiv16Cnt) * beatRate;
-
-                    const beatNote = data.beat * beatRate;
+                    const beatSize = (data.beat + (prevEat * -1 + data.eat) / beatDiv16Cnt);
+                    const beatSizeNote = (data.beat + (prevEat * -1 + data.eat) / beatDiv16Cnt) * beatRate;
 
                     const viewPosLeft = viewPos;
                     const viewPosWidth = beatSize * store.env.beatWidth;
@@ -140,9 +140,11 @@ const useReducerCache = () => {
                         beat,
                         compiledChord,
                         startBeat,
-                        lengthBeat: data.beat,
+                        // lengthBeat: data.beat,
+                        lengthBeat: beatSize,
                         startBeatNote,
-                        lengthBeatNote: data.beat * beatRate,
+                        // lengthBeatNote: data.beat * beatRate,
+                        lengthBeatNote: beatSizeNote,
                         viewPosLeft,
                         viewPosWidth,
                         sustainTime,
@@ -151,6 +153,12 @@ const useReducerCache = () => {
                         modulate: lastModulate,
                         tempo: lastTempo
                     };
+
+                    // startBeat += data.beat;
+                    startBeat += beatSize;
+                    // startBeatNote += data.beat * beatRate;
+                    startBeatNote += beatSizeNote;
+
                     sectionStart = undefined;
                     lastModulate = undefined;
                     lastTempo = undefined;
@@ -183,7 +191,7 @@ const useReducerCache = () => {
                     baseBlock.sustainTime = 0;
 
                     const divCnt = MusicTheory.getBarDivBeatCount(baseBlock.scoreBase.ts);
-                    // baseBlock.startBar += Math.ceil(baseBlock.lengthBeat / divCnt);
+                    baseBlock.startBar += Math.ceil(baseBlock.lengthBeat / divCnt);
 
                     baseBlock.startBeat = baseBlock.startBeat + baseBlock.lengthBeat;
                     baseBlock.startBeatNote += baseBlock.lengthBeatNote;
@@ -273,9 +281,19 @@ const useReducerCache = () => {
         return cache.chordCaches[chordSeq];
     }
 
+    const getChordTail = () => {
+        const chordCaches = store.cache.chordCaches;
+        return chordCaches[chordCaches.length - 1];
+    }
+    const getBeatNoteTail = () => {
+        const tail = getChordTail();
+        return tail.startBeatNote + tail.lengthBeatNote;
+    }
+
     return {
         calculate,
-        getChordInfoFromElementSeq
+        getChordInfoFromElementSeq,
+        getBeatNoteTail
     };
 }
 

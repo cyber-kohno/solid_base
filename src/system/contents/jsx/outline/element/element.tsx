@@ -8,6 +8,7 @@ import { createMemo } from "solid-js";
 import FocusCover from "~/system/common/item/focusCover";
 import { store, getSnapshot } from "~/system/contents/store/store";
 import StoreCache from "~/system/contents/store/manage/storeCache";
+import StoreOutline from "~/system/contents/store/data/storeOutline";
 
 const Element = (props: {
     element: StoreCache.ElementCache;
@@ -43,18 +44,32 @@ const Element = (props: {
         } else instance.get = () => ref;
     }
 
-    return (<_Item ref={initRef}>
+    return (<_Item
+        ref={initRef}
+        type={props.element.type}
+    >
         {dataJsx()}
         <FocusCover dispCondition={isFocus()} bgColor="#ffec3d6c" />
     </_Item>);
 }
 export default Element;
 
-const _Item = styled.div`
+const _Item = styled.div<{
+    type: StoreOutline.ElementType;
+}>`
     ${SC.rect}
     /* background-color: #f00; */
     width: 180px;
     /* height: 60px; */
-    margin: 2px 0 0 4px;
+    margin-top: 4px;
     /* border: 1px solid #000; */
+    margin-left: ${props => (()=>{
+        switch(props.type) {
+            case 'init': return 4;
+            case 'section': return 10;
+            case 'chord':
+            case 'tempo':
+            case 'modulate': return 25;
+        }
+    })()}px;
 `;

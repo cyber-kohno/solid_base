@@ -1,9 +1,13 @@
 import { store, StoreProps } from "../store";
+import useReducerMelody from "./reducerMelody";
 
 const useReducerRoot = () => {
 
+    const reducerMelody = useReducerMelody();
+
     const switchMode = () => {
         const mode = store.control.mode;
+        if (mode === 'harmonize') reducerMelody.syncChordSeqFromOutlineFocus();
         store.control.mode = mode === 'harmonize' ? 'melody' : 'harmonize';
     };
 

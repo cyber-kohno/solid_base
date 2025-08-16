@@ -1,43 +1,42 @@
 import { css } from "@emotion/react";
-import { Component, createMemo, JSX } from "solid-js";
+import { createMemo } from "solid-js";
 import { styled } from "solid-styled-components";
 import SC from "~/system/common/styled";
 import Layout from "~/system/contents/const/layout";
 import useAccessorCache from "~/system/contents/store/accessor/accessorCache";
 import { getSnapshot } from "~/system/contents/store/store";
 
-const GridFocus = () => {
+const MeasureFocus = () => {
+
     const { snapshot } = getSnapshot();
     const { getFocusInfo } = useAccessorCache(snapshot);
 
     const values = createMemo(getFocusInfo);
 
-    const isHarmonizeMode = createMemo(() => snapshot.control.mode === 'harmonize');
-    return (<_Wrap
-        left={values().left}
-        width={values().width}
-        isChord={values().isChord}
-        isHarmonizeMode={isHarmonizeMode()}
-    />);
-}
-export default GridFocus;
+    return () => {
+        const { left, width, isChord } = values();
+        return (<_Wrap
+            left={left}
+            width={width}
+            isChord={isChord}
+        />);
+    };
+};
+export default MeasureFocus;
 
-const PL = Layout.pitch;
-const Height = PL.ITEM_HEIGHT * PL.NUM;
 
 const _Wrap = styled.div<{
     left: number;
     width: number;
     isChord: boolean;
-    isHarmonizeMode: boolean;
 }>`
     ${SC.absolute({ zIndex: 2 })}
     top: 0;
     left: ${props => props.left}px;
     width: ${props => props.width}px;
-    height: ${() => Height}px;
+    height: 100%;
     ${props => props.isChord ? css`
-        background-color: ${props.isHarmonizeMode ? '#22b6f64f;' : '#fffacd40;'}
+        background-color: #f6be224f;
     `.styles : css`
         background-color: #f60000da;
     `.styles};

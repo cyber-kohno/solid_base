@@ -12,6 +12,7 @@ const RootHeader = () => {
     <_Wrap>
       <ModeButton name="Harmonize" isActive={mode() === "harmonize"} />
       <ModeButton name="Melody" isActive={mode() === "melody"} />
+      <_Info>{snapshot.info}</_Info>
     </_Wrap>
   );
 };
@@ -22,5 +23,16 @@ const _Wrap = styled("div")`
   ${SC.rect}
   width: 100%;
   height: 100%;
-  background-color: #fda;
+  background-color: #a2b7c4;
+`;
+
+const _Info = styled("div")`
+  ${SC.rect}
+  width: calc(100% - 440px);
+  height: calc(100% - 16px);
+  background-color: #00153840;
+  margin: 8px 0 0 20px;
+  padding: 0 0 0 2px;
+  ${SC.text({fontSize: 16, color: '#fff', fontWeight: 300})}
+  overflow: hidden;
 `;

@@ -39,7 +39,7 @@ const _Wrap = styled.div`
     ${SC.rect}
     width: 100%;
     height: ${layout.HEADER_HEIGHT.toString()}px;
-    background-color: #f1a3a3;
+    background-color: #456b7b;
 `;
 
 const _Record = styled.div`

@@ -21,7 +21,7 @@ const TerminalFrame = () => {
 
   const initRef = (ref: HTMLDivElement) => store.ref.terminal = () => ref;
 
-  return (<_Div><_Wrap ref={initRef}>
+  return (<_Frame><_Wrap ref={initRef}>
     {/* ログ履歴 */}
     <For each={histories()}>{jsx => jsx()}</For>
     {/* コマンドのレコード */}
@@ -39,20 +39,24 @@ const TerminalFrame = () => {
         </>);
       })()}
     </_Record>
-  </_Wrap></_Div>);
+    <_Margin />
+  </_Wrap></_Frame>);
 }
 export default TerminalFrame;
 
-const _Div = styled.div`
+const _Frame = styled.div`
   ${SC.absolute({ zIndex: 4 })}
   width: 700px;
   height: 700px;
-  background-color: #003650;
-  border: 2px solid #fa0000;
+  /* background-color: #003650; */
+  background-color: #192055;
+  /* border: 2px solid #fb0000; */
   box-sizing: border-box;
   top: 10px;
   left: 10px;
-  opacity: 0.99;
+  /* opacity: 0.99; */
+  box-shadow: 10px 10px 15px -10px;
+  /* border-radius: 4px; */
 `;
 const _Wrap = styled.div`
   ${SC.wrap({ margin: 4 })}
@@ -105,4 +109,11 @@ const _Cursor = styled.div`
   height: calc(100% - 6px);
   background-color: #ffff3d;
   animation: ${blinkAnimation} 1s step-start infinite; /* 点滅するアニメーション */
+`;
+
+const _Margin = styled.div`
+  ${SC.rect}
+  width: 100%;
+  height: 50%;
+  /* background-color: #ffffff41; */
 `;

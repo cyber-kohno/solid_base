@@ -19,6 +19,13 @@ const useAccessorCache = (snapshot: StoreProps) => {
         const element = getCurElement();
         return snapshot.cache.baseCaches[element.baseSeq];
     }
+    const getBaseFromBeat = (pos: number) => {
+        const base = snapshot.cache.baseCaches.find(b => {
+            return b.startBeatNote <= pos && pos < b.startBeatNote + b.lengthBeatNote;
+        });
+        if (base == undefined) throw new Error();
+        return base;
+    }
     const getCurChord = () => {
         const element = getCurElement();
         if (element.chordSeq === -1) throw new Error('コード要素でないところで呼び出された。');
@@ -26,11 +33,38 @@ const useAccessorCache = (snapshot: StoreProps) => {
         return chordCache;
     }
 
+    const getFocusInfo = () => {
+        const outline = snapshot.control.outline;
+        const elementCache = snapshot.cache.elementCaches[outline.focus];
+        const chordCaches = snapshot.cache.chordCaches;
+
+        const lastChordSeq = elementCache.lastChordSeq;
+        const chordSeq = elementCache.chordSeq;
+        let left = 0;
+        let width = 20;
+        let isChord = false;
+        if (chordSeq === -1) {
+
+            if (lastChordSeq !== -1) {
+                const chordCache = chordCaches[lastChordSeq];
+                left = chordCache.viewPosLeft + chordCache.viewPosWidth;
+            }
+        } else {
+            const chordCache = chordCaches[chordSeq];
+            left = chordCache.viewPosLeft;
+            width = chordCache.viewPosWidth;
+            isChord = true;
+        }
+        return { left, width, isChord };
+    }
+
     return {
         getChordBlockRight,
         getCurElement,
         getCurBase,
         getCurChord,
+        getBaseFromBeat,
+        getFocusInfo
     }
 }
 

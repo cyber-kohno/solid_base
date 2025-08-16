@@ -31,14 +31,14 @@ const BaseBlock = (props: {
         for (let i = 0; i < cnt; i++) {
             const left = (beatWidth() / beatDiv16Count()) * i;
             let width = 1;
-            if (i % beatDiv16Count() === 0) width = 2;
+            if (i % beatDiv16Count() === 0) width = 3;
             list.push({ left, width });
         }
         return list;
     });
 
     const pitchItems = createMemo(() => {
-        const pitchNum = Layout.pitch.PITCH_NUM;
+        const pitchNum = Layout.pitch.NUM;
         const tonality = baseBlock().scoreBase.tonality;
         const scaleList =
             tonality.scale === "major"
@@ -49,7 +49,7 @@ const BaseBlock = (props: {
             type: PitchType;
         }[] = [];
         for (let i = 0; i < pitchNum; i++) {
-            const top = i * Layout.pitch.PITCH_ITEM_HEIGHT;
+            const top = i * Layout.pitch.ITEM_HEIGHT;
             let type: PitchType = 'other';
 
             const pitchIndex = pitchNum - 1 - i;
@@ -82,7 +82,7 @@ const BaseBlock = (props: {
 export default BaseBlock;
 
 const PL = Layout.pitch;
-const Height = PL.PITCH_ITEM_HEIGHT * PL.PITCH_NUM;
+const Height = PL.ITEM_HEIGHT * PL.NUM;
 
 const _Wrap = styled.div<{
     left: number;
@@ -92,7 +92,7 @@ const _Wrap = styled.div<{
     position: absolute;
     z-index: 1;
 
-    background-color: #509784;
+    /* background-color: #509784; */
     top: 0;
     left: ${props => props.left}px;
     width: ${props => props.width}px;
@@ -109,7 +109,7 @@ const _Line = styled.div<{
     left: ${props => props.left}px;
     width: ${props => props.width}px;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.478);
+    background-color: rgba(255, 255, 255, 0.303);
 `;
 
 
@@ -123,12 +123,12 @@ const _Pitch = styled.div<{
     left: 0;
     top: ${props => props.top}px;
     width: 100%;
-    height: ${PL.PITCH_ITEM_HEIGHT.toString()}px;
+    height: ${PL.ITEM_HEIGHT.toString()}px;
     background-color: ${props => (() => {
         switch (props.type) {
-            case 'other': return '#000';
-            case 'tonic': return '#f00';
-            case 'scale': return '#fa3';
+            case 'other': return '#00000041';
+            case 'tonic': return '#006aff68';
+            case 'scale': return '#ffffff48';
         }
     })()};
     opacity: 0.2;

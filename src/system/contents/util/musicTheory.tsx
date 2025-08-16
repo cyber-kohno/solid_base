@@ -3,6 +3,11 @@ import StoreOutline from "../store/data/storeOutline";
 
 namespace MusicTheory {
 
+    /**
+     * 1小節に何拍入るかを返す。
+     * @param ts タイムシグネチャ 
+     * @returns 拍数
+     */
     export const getBarDivBeatCount = (ts: TimeSignature) => {
         const val = `${ts.den}/${ts.num}`;
         switch (val) {
@@ -14,6 +19,12 @@ namespace MusicTheory {
         }
         throw new Error(`拍子[${val}]は不適切な値。`);
     }
+
+    /**
+     * 1拍に入る16分音符の数を返す。
+     * @param ts タイムシグネチャ
+     * @returns 16分音符の数
+     */
     export const getBeatDiv16Count = (ts: TimeSignature) => {
         switch (ts.num) {
             case 4: return 4;
@@ -80,6 +91,10 @@ namespace MusicTheory {
     export type Tonality = {
         key12: number;
         scale: Scale;
+    }
+    export const isScale = (pitchIndex: number, tonality: Tonality) => {
+        const list = tonality.scale === 'major' ? MAJOR_SCALE_INTERVALS : MINOR_SCALE_INTERVALS;
+        return list.includes((pitchIndex - tonality.key12) % 12);
     }
 
     export interface DegreeKey {

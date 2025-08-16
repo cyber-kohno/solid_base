@@ -20,9 +20,12 @@ namespace Layout {
     }
 
     export const pitch = {
-        PITCH_FRAME_WIDTH: 80,
-        PITCH_NUM: 94,
-        PITCH_ITEM_HEIGHT: 30
+        FRAME_WIDTH: 80,
+        NUM: 94,
+        ITEM_HEIGHT: 30
+    }
+    export const getPitchTop = (index: number) => {
+        return pitch.ITEM_HEIGHT * (pitch.NUM - 1 - index);
     }
 };
 
