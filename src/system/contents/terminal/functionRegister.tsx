@@ -457,7 +457,7 @@ namespace FunctionRegister {
                 funcName: 'sfs',
                 args: [],
                 callback: (args) => {
-                    const items = StorePreview.getInstrumentNames().filter(n => {
+                    const items = StorePreview.InstrumentNames.filter(n => {
                         const v = args[0];
                         if (v == undefined) return true;
                         else return n.indexOf(v) !== -1;

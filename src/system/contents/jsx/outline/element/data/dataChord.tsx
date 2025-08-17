@@ -62,7 +62,6 @@ const DataChord = (props: {
         <Show when={chordName()}>
             <_ChordDiv>{chordName()}  </_ChordDiv>
         </Show>
-
     </_Wrap>);
 }
 export default DataChord;

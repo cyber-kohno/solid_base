@@ -17,12 +17,18 @@ const Note = (props: {
     const { snapshot } = getSnapshot();
     const { getBaseFromBeat } = useAccessorCache(snapshot);
 
+    const tonality = createMemo(() => {
+        const note = props.note;
+        return getBaseFromBeat(StoreMelody.calcBeat(note.norm, note.pos)).scoreBase.tonality;
+    });
+
     const noteInfo = createMemo(() => {
         const note = props.note;
         const beatSize = StoreMelody.calcBeat(note.norm, note.pos);
         const left = snapshot.env.beatWidth * beatSize;
-        const pitch = note.pitch;
-        return { left, pitch };
+        const pitchIndex = note.pitch;
+        const scaleIndex = (note.pitch - tonality().key12) % 12;
+        return { left, pitchIndex, scaleIndex };
     });
 
     const width = createMemo(() => {
@@ -32,9 +38,7 @@ const Note = (props: {
     });
 
     const isScale = createMemo(() => {
-        const note = props.note;
-        const tonality = getBaseFromBeat(StoreMelody.calcBeat(note.norm, note.pos)).scoreBase.tonality;
-        return MusicTheory.isScale(note.pitch, tonality);
+        return MusicTheory.isScale(props.note.pitch, tonality());
     });
 
     const isFocus = createMemo(() => {
@@ -60,11 +64,12 @@ const Note = (props: {
             state={operationStates()}
         >
             <_Frame
-                pitchIndex={noteInfo().pitch}
+                pitchIndex={noteInfo().pitchIndex}
                 isScale={isScale()}
             >
+                <_Protrusion isScale={isScale()} />
                 <Factors note={props.note} />
-                <_Info>{noteInfo().pitch}</_Info>
+                <_Info>{noteInfo().scaleIndex}</_Info>
             </_Frame>
         </_Div>
     );
@@ -121,6 +126,20 @@ const _Frame = styled.div<{
     border-radius: 0 12px 12px 0;
     box-sizing: border-box;
     box-shadow: 10px 10px 15px -10px;
+`;
+
+const _Protrusion = styled.div<{
+    isScale: boolean;
+}>`
+    display: inline-block;
+    position: absolute;
+    left: 0;
+    top: -10px;
+    height: 10px;
+    width: 8px;
+    background-color: #ff00007a;
+    /* background-color: ${props => props.isScale ? '#1ccf49d5' : '#eacb1dd5'}; */
+    border-radius: 4px 4px 0 0;
 `;
 
 const _Info = styled.div`
