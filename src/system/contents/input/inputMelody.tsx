@@ -1,8 +1,10 @@
+import { preview } from "vite";
 import Layout from "../const/layout";
 import useAccessorCache from "../store/accessor/accessorCache";
 import useAccessorMelody from "../store/accessor/accessorMelody";
 import useAccessorPreview from "../store/accessor/accessorPreview";
 import StoreMelody from "../store/data/storeMelody";
+import StorePreview from "../store/manage/storePreview";
 import useReducerCache from "../store/reducer/reducerCache";
 import useReducerMelody from "../store/reducer/reducerMelody";
 import useReducerOutline from "../store/reducer/reducerOutline";
@@ -20,7 +22,18 @@ const useInputMelody = () => {
     const { getCurrScoreTrack } = useAccessorMelody(store);
     const { isPreview } = useAccessorPreview(store);
 
+
     const melody = store.control.melody;
+    const playSF = (pitchIndex: number) => {
+        const track = store.data.tracks[melody.trackIndex] as StoreMelody.ScoreTrack;
+        if (track.soundFont === '') return;
+        const sfName = StorePreview.validateSFName(track.soundFont);
+        const sf = store.preview.sfItems.find(item => item.instrumentName === sfName);
+        if (sf == undefined || sf.player == undefined) return;
+        sf.player.stop();
+        const soundName = MusicTheory.getKey12FullName(pitchIndex);
+        sf.player.play(soundName, 0, { gain: 5, duration: 0.5 });
+    }
 
     const isCursor = () => melody.focus === -1;
     const getFocusNote = () => {
@@ -34,6 +47,7 @@ const useInputMelody = () => {
         if (temp < 0) temp = 0;
         if (temp > max) temp = max;
         note.pitch = temp;
+        playSF(note.pitch);
         adjustGridScrollYFromCursor(note);
     }
 
@@ -239,6 +253,7 @@ const useInputMelody = () => {
                 if (temp < 0) temp = 0;
                 if (temp > max) temp = max;
                 note.pitch = temp;
+                playSF(note.pitch);
                 adjustGridScrollYFromCursor(note);
             }
             if (isCursor()) {
