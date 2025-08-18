@@ -11,7 +11,7 @@ const useReducerMelody = () => {
     const { syncChordSeqFromNote } = useReducerOutline();
     const { adjustGridScrollXFromNote } = useReducerRef();
 
-    const syncChordSeqFromOutlineFocus = () => {
+    const syncCursorFromElementSeq = () => {
         const focus = store.control.outline.focus;
         const cache = store.cache;
         const { lastChordSeq, chordSeq } = cache.elementCaches[focus];
@@ -59,7 +59,7 @@ const useReducerMelody = () => {
         });
         melody.isOverlap = overlapNote != undefined;
     }
-    const focusNearNote = (dir: -1 | 1) => {
+    const focusInNearNote = (dir: -1 | 1) => {
         const { getCurrScoreTrack } = useAccessorMelody(store);
         const melody = store.control.melody;
         const cursor = melody.cursor;
@@ -68,8 +68,9 @@ const useReducerMelody = () => {
 
         const cursorPos = StoreMelody.calcBeat(cursor.norm, cursor.pos);
         const matchIndex = (dir === -1 ? notes.slice().reverse() : notes).findIndex(n => {
-            const nPos = StoreMelody.calcBeat(n.norm, n.pos);
-            return dir === -1 ? cursorPos > nPos : cursorPos <= nPos;
+            const side = StoreMelody.calcBeatSide(n);
+            const [left, right] = [side.pos, side.pos + side.len];
+            return dir === -1 ? cursorPos > left : cursorPos < right;
         });
         if (matchIndex !== -1) {
             melody.focus = (dir === -1 ? notes.length - 1 - matchIndex : matchIndex);
@@ -79,7 +80,7 @@ const useReducerMelody = () => {
         }
     }
 
-    const cursorNoteSide = (note: StoreMelody.Note, dir: -1 | 1) => {
+    const focusOutNoteSide = (note: StoreMelody.Note, dir: -1 | 1) => {
         const melody = store.control.melody;
         melody.cursor = JSON.parse(JSON.stringify(note));
         const cursor = melody.cursor;
@@ -107,7 +108,7 @@ const useReducerMelody = () => {
         melody.trackIndex = trackIndex;
         if (prevTrack.method === 'score' && melody.focus !== -1) {
             const notes = (prevTrack as StoreMelody.ScoreTrack).notes;
-            cursorNoteSide(notes[melody.focus], -1);
+            focusOutNoteSide(notes[melody.focus], -1);
         }
     }
     const setSFCurTrack = (sfName: InstrumentName) => {
@@ -151,12 +152,12 @@ const useReducerMelody = () => {
     }
 
     return {
-        syncChordSeqFromOutlineFocus,
+        syncCursorFromElementSeq,
         addNote,
         addNoteFromCursor,
         judgeOverlap,
-        focusNearNote,
-        cursorNoteSide,
+        focusInNearNote,
+        focusOutNoteSide,
         changeScoreTrack,
         setSFCurTrack,
         loadSFPlayer

@@ -26,6 +26,13 @@ const useAccessorCache = (snapshot: StoreProps) => {
         if (base == undefined) throw new Error();
         return base;
     }
+    const getChordFromBeat = (pos: number) => {
+        const chord = snapshot.cache.chordCaches.find(c => {
+            return c.startBeatNote <= pos && pos < c.startBeatNote + c.lengthBeatNote;
+        });
+        if (chord == undefined) throw new Error();
+        return chord;
+    }
     const getCurChord = () => {
         const element = getCurElement();
         if (element.chordSeq === -1) throw new Error('コード要素でないところで呼び出された。');
@@ -64,6 +71,7 @@ const useAccessorCache = (snapshot: StoreProps) => {
         getCurBase,
         getCurChord,
         getBaseFromBeat,
+        getChordFromBeat,
         getFocusInfo
     }
 }

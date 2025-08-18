@@ -1,4 +1,4 @@
-import { createMemo } from "solid-js";
+import { createMemo, onCleanup } from "solid-js";
 import { styled } from "solid-styled-components";
 import Layout from "~/system/contents/const/layout";
 import { getSnapshot } from "~/system/contents/store/store";

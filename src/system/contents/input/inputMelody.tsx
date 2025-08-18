@@ -60,6 +60,7 @@ const useInputMelody = () => {
             const prev = cursor.norm.div;
             const rate = div / prev;
             cursor.norm.div = div;
+            cursor.norm.tuplets = undefined;
             cursor.pos = Math.floor(cursor.pos * rate);
 
             reducerMelody.judgeOverlap();
@@ -103,7 +104,7 @@ const useInputMelody = () => {
                     if (!melody.isOverlap) {
                         reducerMelody.addNoteFromCursor();
                         // reducerMelody.judgeOverlap();
-                        reducerMelody.focusNearNote(1);
+                        reducerMelody.focusInNearNote(1);
                     }
                 } break;
             }
@@ -134,7 +135,7 @@ const useInputMelody = () => {
                 case 'ArrowDown': movePitch(getFocusNote(), -1); break;
                 case 'Delete': {
                     const focus = melody.focus;
-                    reducerMelody.cursorNoteSide(getFocusNote(), -1);
+                    reducerMelody.focusOutNoteSide(getFocusNote(), -1);
                     notes.splice(focus, 1);
                     melody.isOverlap = false;
                 } break;
@@ -183,13 +184,13 @@ const useInputMelody = () => {
 
             if (isCursor()) {
                 switch (eventKey) {
-                    case 'ArrowLeft': reducerMelody.focusNearNote(-1); break;
-                    case 'ArrowRight': reducerMelody.focusNearNote(1); break;
+                    case 'ArrowLeft': reducerMelody.focusInNearNote(-1); break;
+                    case 'ArrowRight': reducerMelody.focusInNearNote(1); break;
                 }
             } else {
                 switch (eventKey) {
-                    case 'ArrowLeft': reducerMelody.cursorNoteSide(getFocusNote(), -1); break;
-                    case 'ArrowRight': reducerMelody.cursorNoteSide(getFocusNote(), 1); break;
+                    case 'ArrowLeft': reducerMelody.focusOutNoteSide(getFocusNote(), -1); break;
+                    case 'ArrowRight': reducerMelody.focusOutNoteSide(getFocusNote(), 1); break;
                 }
             }
         }

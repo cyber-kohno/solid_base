@@ -7,7 +7,7 @@ const useReducerRoot = () => {
 
     const switchMode = () => {
         const mode = store.control.mode;
-        if (mode === 'harmonize') reducerMelody.syncChordSeqFromOutlineFocus();
+        if (mode === 'harmonize') reducerMelody.syncCursorFromElementSeq();
         store.control.mode = mode === 'harmonize' ? 'melody' : 'harmonize';
     };
 

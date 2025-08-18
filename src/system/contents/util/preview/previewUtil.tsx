@@ -1,6 +1,9 @@
+import useAccessorCache from "../../store/accessor/accessorCache";
 import useAccessorMelody from "../../store/accessor/accessorMelody";
 import StoreMelody from "../../store/data/storeMelody";
 import StorePreview from "../../store/manage/storePreview";
+import useReducerMelody from "../../store/reducer/reducerMelody";
+import useReducerRef from "../../store/reducer/reducerRef";
 import { store } from "../../store/store";
 import FileUtil from "../fileUtil";
 import MusicTheory from "../musicTheory"; import SoundFont, { instrument, type InstrumentName } from 'soundfont-player';
@@ -29,8 +32,10 @@ namespace PreviewUtil {
         const { chordCaches, elementCaches } = store.cache;
         const { elements, tracks } = store.data;
         const preview = store.preview;
+        const { getChordFromBeat } = useAccessorCache(store);
 
         const { getCurrScoreTrack } = useAccessorMelody(store);
+        const { adjustGridScrollXFromOutline, adjustOutlineScroll } = useReducerRef();
 
         const containsLayer = (...targets: LayerTargetMode[]) => {
             return targets.includes(option.target);
@@ -171,6 +176,13 @@ namespace PreviewUtil {
             // console.log(`posBeat: ${posBeat}`);
             preview.linePos = posBeat;
 
+            const chord = getChordFromBeat(posBeat);
+
+            if (outline.focus !== chord.elementSeq) {
+                outline.focus = chord.elementSeq;
+                adjustGridScrollXFromOutline();
+                adjustOutlineScroll();
+            }
         }, 50); // 50ミリ秒ごとに画面を更新
 
         getIntervalKeys().push(intervalKey);
@@ -318,16 +330,18 @@ namespace PreviewUtil {
     }
 
     export const stopTest = () => {
+        const { syncCursorFromElementSeq } = useReducerMelody();
+
         const preview = store.preview;
         if (preview.timerKeys == null) throw new Error('cache.timerKeysがnullであってはならない。');
         preview.timerKeys.forEach(key => {
-            // console.log(`clear: [${key}]`);
+            console.log(`clear timerKeys: [${key}]`);
             clearTimeout(key);
         });
         preview.timerKeys = null;
         if (preview.intervalKeys != null) {
             preview.intervalKeys.forEach(key => {
-                // console.log(`clear: [${key}]`);
+                console.log(`clear intervalKeys: [${key}]`);
                 clearInterval(key);
             });
             preview.intervalKeys = null;
@@ -339,6 +353,11 @@ namespace PreviewUtil {
 
         preview.audios.forEach(audio => audio.element.pause());
         preview.audios.length = 0;
+
+        // メロディモード時はカーソルを同期
+        if (store.control.mode === 'melody') {
+            syncCursorFromElementSeq();
+        }
     }
 };
 export default PreviewUtil;

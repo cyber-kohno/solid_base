@@ -3,6 +3,7 @@ import { styled } from "solid-styled-components";
 import SC from "~/system/common/styled";
 import StoreOutline from "~/system/contents/store/data/storeOutline";
 import StoreCache from "~/system/contents/store/manage/storeCache";
+import { getSnapshot } from "~/system/contents/store/store";
 import MusicTheory from "~/system/contents/util/musicTheory";
 
 const TIP_BASE_WIDTH = 12;
@@ -11,6 +12,10 @@ const DataChord = (props: {
     data: StoreOutline.DataChord;
     cache: StoreCache.ChordCache;
 }) => {
+    const { snapshot } = getSnapshot();
+
+    const chordSeq = createMemo(() => snapshot.cache.chordCaches
+        .findIndex(c => c.elementSeq == props.cache.elementSeq));
 
     const beatTips = createMemo((): number[] => {
         const chordInfo = props.cache;
@@ -48,10 +53,8 @@ const DataChord = (props: {
         return MusicTheory.getKeyChordName(compiledChord.chord);
     });
 
-    // const chordSeq = createMemo(() => accessorCache.getCurElement().chordSeq);
-
     return (<_Wrap>
-        <_SeqDiv>{props.cache.elementSeq}</_SeqDiv>
+        <_SeqDiv>{chordSeq()}</_SeqDiv>
         <_TipDiv>
             <For each={beatTips()}>{tip => {
 
